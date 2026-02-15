@@ -420,6 +420,23 @@
       margin-right: 12px;
     }
 
+    /* ---- FORM ERRORS ---- */
+    .form-errors {
+      display: none;
+      background: #fdeaea;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .form-errors.visible {
+      display: block;
+    }
+
     /* ---- VALIDATE BUTTON ---- */
     .btn-validate {
       width: 100%;
@@ -727,7 +744,7 @@
     <!-- ---- SETUP SCREEN ---- -->
     <div id="setup-screen" class="setup-screen">
       <div class="setup-title">Assistant Tarot</div>
-      <div class="setup-subtitle">Compteur de points pour le Tarot francais</div>
+      <div class="setup-subtitle">Compteur de points pour le Tarot français</div>
       <div class="setup-card">
         <span class="setup-label">Nombre de joueurs</span>
         <div class="player-count-group" id="player-count-group">
@@ -750,14 +767,14 @@
       </div>
 
       <!-- ---- TOAST ---- -->
-      <div class="toast" id="toast">Donne ajoutee !</div>
+      <div class="toast" id="toast">Donne ajoutée !</div>
 
       <!-- ---- TAB: NOUVELLE DONNE ---- -->
       <div class="tab-panel active" id="panel-nouvelle-donne">
 
         <!-- Preneur -->
         <div class="form-section">
-          <span class="form-label">Preneur</span>
+          <label class="form-label" for="select-preneur">Preneur</label>
           <select class="form-select" id="select-preneur">
             <option value="">-- Choisir --</option>
           </select>
@@ -765,7 +782,7 @@
 
         <!-- Partenaire (5 joueurs only) -->
         <div class="form-section partenaire-section" id="partenaire-section">
-          <span class="form-label">Partenaire (appele)</span>
+          <label class="form-label" for="select-partenaire">Partenaire (appelé)</label>
           <select class="form-select" id="select-partenaire">
             <option value="">-- Choisir --</option>
           </select>
@@ -803,7 +820,7 @@
 
         <!-- Points du preneur -->
         <div class="form-section">
-          <span class="form-label">Points du preneur</span>
+          <label class="form-label" for="input-points">Points du preneur</label>
           <div class="number-stepper">
             <button class="stepper-btn" id="stepper-minus" type="button">&minus;</button>
             <input type="number" class="stepper-input" id="input-points" min="0" max="91" value="" placeholder="--">
@@ -820,13 +837,13 @@
             <input type="radio" name="petitAuBout" id="petit-attaque" value="attaque">
             <label for="petit-attaque">Attaque</label>
             <input type="radio" name="petitAuBout" id="petit-defense" value="defense">
-            <label for="petit-defense">Defense</label>
+            <label for="petit-defense">Défense</label>
           </div>
         </div>
 
         <!-- Poignee -->
         <div class="form-section">
-          <span class="form-label" id="poignee-label">Poignee</span>
+          <label class="form-label" id="poignee-label" for="select-poignee">Poignée</label>
           <select class="form-select" id="select-poignee">
             <option value="non">Non</option>
             <option value="simple">Simple</option>
@@ -834,34 +851,37 @@
             <option value="triple">Triple</option>
           </select>
           <div class="poignee-sub hidden" id="poignee-camp-section">
-            <span class="form-label" style="margin-top:8px;">Camp de la poignee</span>
+            <label class="form-label" for="poignee-camp-attaque" style="margin-top:8px;">Camp de la poignée</label>
             <div class="segmented">
               <input type="radio" name="poigneeCamp" id="poignee-camp-attaque" value="attaque" checked>
               <label for="poignee-camp-attaque">Attaque</label>
               <input type="radio" name="poigneeCamp" id="poignee-camp-defense" value="defense">
-              <label for="poignee-camp-defense">Defense</label>
+              <label for="poignee-camp-defense">Défense</label>
             </div>
           </div>
         </div>
 
         <!-- Chelem -->
         <div class="form-section">
-          <span class="form-label">Chelem</span>
+          <label class="form-label" for="select-chelem">Chelem</label>
           <select class="form-select" id="select-chelem">
             <option value="non">Non</option>
-            <option value="annonceReussi">Annonce reussi</option>
-            <option value="nonAnnonceReussi">Non annonce reussi</option>
-            <option value="annonceChuté">Annonce chute</option>
+            <option value="annonceReussi">Annoncé réussi</option>
+            <option value="nonAnnonceReussi">Non annoncé réussi</option>
+            <option value="annonceChute">Annoncé chuté</option>
           </select>
         </div>
 
         <!-- Live Preview -->
         <div class="preview-section" id="preview-section">
-          <div class="preview-title">Apercu du score</div>
+          <div class="preview-title">Aperçu du score</div>
           <div class="preview-score neutral" id="preview-score">--</div>
           <div class="preview-breakdown" id="preview-breakdown"></div>
           <div class="preview-distribution" id="preview-distribution"></div>
         </div>
+
+        <!-- Form Errors -->
+        <div id="form-errors" class="form-errors"></div>
 
         <!-- Validate -->
         <button class="btn-validate" id="btn-valider">Valider la donne</button>
@@ -871,7 +891,7 @@
       <div class="tab-panel" id="panel-partie-en-cours">
         <div id="scores-content"></div>
         <div class="actions-section">
-          <button class="btn-danger" id="btn-annuler">Annuler derniere donne</button>
+          <button class="btn-danger" id="btn-annuler">Annuler dernière donne</button>
           <button class="btn-secondary" id="btn-nouvelle-partie">Nouvelle partie</button>
         </div>
       </div>
@@ -920,7 +940,7 @@
       let primeChelem = 0;
       if (chelem === 'annonceReussi') primeChelem = 400;
       else if (chelem === 'nonAnnonceReussi') primeChelem = 200;
-      else if (chelem === 'annonceChuté') primeChelem = -200;
+      else if (chelem === 'annonceChute') primeChelem = -200;
 
       const totalPreneur = scoreBase + primePetit + primePoignee + primeChelem;
 
@@ -1040,9 +1060,9 @@
 
     const CHELEM_LABELS = {
       non: 'Non',
-      annonceReussi: 'Annonce reussi',
-      nonAnnonceReussi: 'Non annonce reussi',
-      'annonceChuté': 'Annonce chute'
+      annonceReussi: 'Annoncé réussi',
+      nonAnnonceReussi: 'Non annoncé réussi',
+      annonceChute: 'Annoncé chuté'
     };
 
     // ---- DOM REFERENCES ----
@@ -1070,6 +1090,7 @@
     const $btnAnnuler = document.getElementById('btn-annuler');
     const $btnNouvellePartie = document.getElementById('btn-nouvelle-partie');
     const $toast = document.getElementById('toast');
+    const $formErrors = document.getElementById('form-errors');
 
     let setupNbJoueurs = 4;
 
@@ -1288,12 +1309,12 @@
 
         if (vals.poignee && vals.poignee.niveau !== 'non') {
           const pVal = POIGNEE_VALS[vals.poignee.niveau];
-          parts.push(`Poignee: ${gagne ? '+' : '-'}${pVal}`);
+          parts.push(`Poignée: ${gagne ? '+' : '-'}${pVal}`);
         }
 
         if (vals.chelem === 'annonceReussi') parts.push('Chelem: +400');
         else if (vals.chelem === 'nonAnnonceReussi') parts.push('Chelem: +200');
-        else if (vals.chelem === 'annonceChuté') parts.push('Chelem: -200');
+        else if (vals.chelem === 'annonceChute') parts.push('Chelem: -200');
 
         const sign = total > 0 ? '+' : '';
         $previewScore.textContent = `Score preneur : ${sign}${total}`;
@@ -1355,9 +1376,14 @@
       }
 
       if (errors.length > 0) {
-        alert(errors.join('\n'));
+        $formErrors.innerHTML = errors.map(e => `<div>${e}</div>`).join('');
+        $formErrors.classList.add('visible');
         return;
       }
+
+      // Clear any previous errors
+      $formErrors.innerHTML = '';
+      $formErrors.classList.remove('visible');
 
       try {
         const donneParams = {
@@ -1374,7 +1400,7 @@
         ajouterDonne(donneParams);
 
         // Success feedback
-        showToast('Donne ajoutee !');
+        showToast('Donne ajoutée !');
 
         // Reset form
         resetForm();
@@ -1404,6 +1430,8 @@
       $previewScore.className = 'preview-score neutral';
       $previewBreakdown.textContent = '';
       $previewDistribution.textContent = '';
+      $formErrors.innerHTML = '';
+      $formErrors.classList.remove('visible');
     }
 
     function showToast(msg) {
@@ -1424,7 +1452,7 @@
         $scoresContent.innerHTML = `
           <div class="empty-state">
             <div class="empty-state-icon">&#9824;</div>
-            <div class="empty-state-text">Aucune donne enregistree.<br>Ajoutez une donne pour commencer !</div>
+            <div class="empty-state-text">Aucune donne enregistrée.<br>Ajoutez une donne pour commencer !</div>
           </div>
         `;
         return;
@@ -1462,10 +1490,10 @@
         html += `<div class="donne-detail-item"><span class="detail-label">Points:</span> ${d.pointsPreneur}</div>`;
 
         if (d.petitAuBout && d.petitAuBout !== 'non') {
-          html += `<div class="donne-detail-item"><span class="detail-label">Petit au bout:</span> ${d.petitAuBout === 'attaque' ? 'Attaque' : 'Defense'}</div>`;
+          html += `<div class="donne-detail-item"><span class="detail-label">Petit au bout:</span> ${d.petitAuBout === 'attaque' ? 'Attaque' : 'Défense'}</div>`;
         }
         if (d.poignee && d.poignee.niveau !== 'non') {
-          html += `<div class="donne-detail-item"><span class="detail-label">Poignee:</span> ${d.poignee.niveau} (${d.poignee.camp})</div>`;
+          html += `<div class="donne-detail-item"><span class="detail-label">Poignée:</span> ${d.poignee.niveau} (${d.poignee.camp})</div>`;
         }
         if (d.chelem && d.chelem !== 'non') {
           html += `<div class="donne-detail-item"><span class="detail-label">Chelem:</span> ${CHELEM_LABELS[d.chelem] || d.chelem}</div>`;
@@ -1522,10 +1550,10 @@
 
     $btnAnnuler.addEventListener('click', () => {
       if (state.donnes.length === 0) return;
-      if (confirm('Annuler la derniere donne ?')) {
+      if (confirm('Annuler la dernière donne ?')) {
         annulerDerniereDonne();
         renderScores();
-        showToast('Donne annulee');
+        showToast('Donne annulée');
       }
     });
 
