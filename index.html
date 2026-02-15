@@ -95,6 +95,65 @@
       return scores;
     }
 
+    // ---- STATE MANAGEMENT ----
+
+    const DEFAULT_STATE = {
+      nbJoueurs: 4,
+      joueurs: ['Joueur 1', 'Joueur 2', 'Joueur 3', 'Joueur 4'],
+      donnes: [],
+      partieActive: false
+    };
+
+    let state = loadState();
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem('tarot-state');
+        return saved ? JSON.parse(saved) : { ...DEFAULT_STATE, joueurs: [...DEFAULT_STATE.joueurs] };
+      } catch {
+        return { ...DEFAULT_STATE, joueurs: [...DEFAULT_STATE.joueurs] };
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem('tarot-state', JSON.stringify(state));
+    }
+
+    function nouvellePartie(nbJoueurs, noms) {
+      state = {
+        nbJoueurs,
+        joueurs: noms.slice(0, nbJoueurs),
+        donnes: [],
+        partieActive: true
+      };
+      saveState();
+    }
+
+    function ajouterDonne(donneParams) {
+      const total = calculateScore(donneParams);
+      const scores = distributeScores(total, state.nbJoueurs, donneParams.preneurIndex, donneParams.partenaireIndex);
+      state.donnes.push({ ...donneParams, total, scores });
+      saveState();
+      return { total, scores };
+    }
+
+    function annulerDerniereDonne() {
+      if (state.donnes.length > 0) {
+        state.donnes.pop();
+        saveState();
+        return true;
+      }
+      return false;
+    }
+
+    function getScoresCumules() {
+      const cumuls = new Array(state.nbJoueurs).fill(0);
+      state.donnes.forEach(d => {
+        d.scores.forEach((s, i) => { cumuls[i] += s; });
+      });
+      return cumuls;
+    }
+
     // ---- TESTS ----
 
     function runTests() {
