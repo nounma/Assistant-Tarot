@@ -62,7 +62,7 @@ Si points_preneur < seuil → contrat chuté, score négatif pour le preneur.
 
 - 3 joueurs : preneur ×2, chaque défenseur ×(-1)
 - 4 joueurs : preneur ×3, chaque défenseur ×(-1)
-- 5 joueurs : preneur ×4, partenaire appelé ×1, chaque défenseur ×(-1)
+- 5 joueurs : preneur ×2, partenaire appelé ×1, chaque défenseur ×(-1)
 
 La somme des scores est toujours égale à 0.
 

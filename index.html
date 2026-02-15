@@ -14,18 +14,25 @@
 
     const SEUILS = { 0: 56, 1: 51, 2: 41, 3: 36 };
     const MULTIPLICATEURS = { prise: 1, garde: 2, gardeSans: 4, gardeContre: 6 };
+    const POIGNEE_VALS = { simple: 20, double: 30, triple: 40 };
 
     function calculateScore(donne) {
       const { contrat, bouts, pointsPreneur, petitAuBout, poignee, chelem } = donne;
 
+      if (!(bouts in SEUILS)) throw new Error(`Invalid bouts: ${bouts}`);
+      if (!(contrat in MULTIPLICATEURS)) throw new Error(`Invalid contrat: ${contrat}`);
+      if (typeof pointsPreneur !== 'number' || pointsPreneur < 0 || pointsPreneur > 91) {
+        throw new Error(`Invalid pointsPreneur: ${pointsPreneur}`);
+      }
+
       const seuil = SEUILS[bouts];
       const mult = MULTIPLICATEURS[contrat];
       const diff = pointsPreneur - seuil;
-      const gagné = diff >= 0;
+      const gagne = diff >= 0;
 
       // Score de base : (25 + écart) × multiplicateur, négatif si chuté
       let scoreBase = (25 + Math.abs(diff)) * mult;
-      if (!gagné) scoreBase = -scoreBase;
+      if (!gagne) scoreBase = -scoreBase;
 
       // Petit au bout : 10 × multiplicateur
       let primePetit = 0;
@@ -33,12 +40,11 @@
       else if (petitAuBout === 'defense') primePetit = -10 * mult;
 
       // Poignée : valeur fixe, toujours pour le camp vainqueur
-      const POIGNEE_VALS = { simple: 20, double: 30, triple: 40 };
       let primePoignee = 0;
       if (poignee && poignee.niveau !== 'non') {
         const val = POIGNEE_VALS[poignee.niveau];
-        // La poignée va toujours au camp vainqueur, peu importe qui l'a déclarée
-        primePoignee = gagné ? val : -val;
+        // poignee.camp is for display only — FFT rules: bonus always goes to the winning camp
+        primePoignee = gagne ? val : -val;
       }
 
       // Chelem
@@ -55,6 +61,17 @@
     // ---- SCORE DISTRIBUTION ----
 
     function distributeScores(totalPreneur, nbJoueurs, preneurIndex, partenaireIndex) {
+      if (![3, 4, 5].includes(nbJoueurs)) throw new Error(`Invalid nbJoueurs: ${nbJoueurs}`);
+      if (preneurIndex < 0 || preneurIndex >= nbJoueurs) throw new Error(`Invalid preneurIndex`);
+      if (nbJoueurs === 5) {
+        if (partenaireIndex == null || partenaireIndex < 0 || partenaireIndex >= nbJoueurs) {
+          throw new Error(`Invalid partenaireIndex for 5 players`);
+        }
+        if (partenaireIndex === preneurIndex) {
+          throw new Error(`Partenaire cannot be the same as preneur`);
+        }
+      }
+
       const scores = new Array(nbJoueurs).fill(0);
 
       if (nbJoueurs === 3) {
@@ -82,7 +99,7 @@
 
     function runTests() {
       const tests = [
-        // Garde, 2 bouts, 45 pts => gagné de 4 => (25+4)*2 = 58
+        // Garde, 2 bouts, 45 pts => gagne de 4 => (25+4)*2 = 58
         { input: { contrat: 'garde', bouts: 2, pointsPreneur: 45, petitAuBout: 'non', poignee: null, chelem: 'non' }, expected: 58 },
         // Prise, 0 bout, 50 pts => chuté de 6 => -(25+6)*1 = -31
         { input: { contrat: 'prise', bouts: 0, pointsPreneur: 50, petitAuBout: 'non', poignee: null, chelem: 'non' }, expected: -31 },
