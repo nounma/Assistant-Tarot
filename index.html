@@ -4,10 +4,879 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Assistant Tarot</title>
+  <style>
+    /* ---- CSS VARIABLES ---- */
+    :root {
+      --bg: #f5f0e8;
+      --card: #ffffff;
+      --primary: #1a5c2a;
+      --accent: #c0392b;
+      --text: #2c3e50;
+      --text-light: #7f8c8d;
+      --border: #ddd;
+      --positive: #27ae60;
+      --negative: #c0392b;
+    }
+
+    /* ---- RESET & BASE ---- */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-container {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* ---- SETUP SCREEN ---- */
+    .setup-screen {
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      justify-content: center;
+    }
+
+    .setup-screen.hidden { display: none; }
+
+    .setup-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .setup-subtitle {
+      font-size: 14px;
+      color: var(--text-light);
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .setup-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .setup-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .player-count-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .player-count-btn {
+      flex: 1;
+      height: 52px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: var(--card);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .player-count-btn.active {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .player-count-btn:not(.active):hover {
+      border-color: var(--primary);
+    }
+
+    .player-names {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .player-name-input {
+      height: 48px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 0 14px;
+      font-size: 16px;
+      color: var(--text);
+      background: var(--bg);
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    .player-name-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .btn-primary {
+      width: 100%;
+      height: 52px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-primary:active { opacity: 0.8; }
+
+    /* ---- MAIN APP ---- */
+    .main-app {
+      display: none;
+    }
+
+    .main-app.active {
+      display: block;
+    }
+
+    /* ---- STICKY HEADER ---- */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--primary);
+      color: #fff;
+      padding: 14px 16px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    /* ---- TAB BAR ---- */
+    .tab-bar {
+      position: sticky;
+      top: 48px;
+      z-index: 99;
+      display: flex;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      flex: 1;
+      height: 46px;
+      border: none;
+      background: none;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-light);
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 16px;
+      right: 16px;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 3px 3px 0 0;
+    }
+
+    /* ---- TAB PANELS ---- */
+    .tab-panel {
+      display: none;
+      padding: 16px;
+      padding-bottom: 32px;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* ---- FORM SECTIONS ---- */
+    .form-section {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    /* ---- SELECT INPUTS ---- */
+    .form-select {
+      width: 100%;
+      height: 44px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 0 12px;
+      font-size: 15px;
+      color: var(--text);
+      background: var(--bg);
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237f8c8d' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      cursor: pointer;
+    }
+
+    .form-select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    /* ---- SEGMENTED CONTROL ---- */
+    .segmented {
+      display: flex;
+      gap: 0;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .segmented input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .segmented label {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 44px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      padding: 0 4px;
+      border-right: 1px solid var(--border);
+      user-select: none;
+    }
+
+    .segmented label:last-of-type {
+      border-right: none;
+    }
+
+    .segmented input[type="radio"]:checked + label {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* ---- NUMBER INPUT WITH STEPPER ---- */
+    .number-stepper {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .stepper-btn {
+      width: 52px;
+      height: 44px;
+      border: none;
+      background: var(--card);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+      user-select: none;
+    }
+
+    .stepper-btn:active {
+      background: var(--bg);
+    }
+
+    .stepper-input {
+      flex: 1;
+      height: 44px;
+      border: none;
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      text-align: center;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--bg);
+      -moz-appearance: textfield;
+    }
+
+    .stepper-input::-webkit-outer-spin-button,
+    .stepper-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .stepper-input:focus {
+      outline: none;
+      background: #fff;
+    }
+
+    /* ---- POIGNEE SUB-SELECT ---- */
+    .poignee-sub {
+      margin-top: 8px;
+    }
+
+    .poignee-sub.hidden { display: none; }
+
+    /* ---- LIVE PREVIEW ---- */
+    .preview-section {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      border-left: 4px solid var(--primary);
+    }
+
+    .preview-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 8px;
+    }
+
+    .preview-score {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .preview-score.positive { color: var(--positive); }
+    .preview-score.negative { color: var(--negative); }
+    .preview-score.neutral  { color: var(--text-light); }
+
+    .preview-breakdown {
+      font-size: 13px;
+      color: var(--text-light);
+      margin-top: 6px;
+    }
+
+    .preview-distribution {
+      font-size: 13px;
+      color: var(--text);
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+
+    .preview-distribution span {
+      display: inline-block;
+      margin-right: 12px;
+    }
+
+    /* ---- VALIDATE BUTTON ---- */
+    .btn-validate {
+      width: 100%;
+      height: 52px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-top: 4px;
+    }
+
+    .btn-validate:hover { opacity: 0.9; }
+    .btn-validate:active { opacity: 0.8; }
+    .btn-validate:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ---- SUCCESS TOAST ---- */
+    .toast {
+      position: fixed;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--positive);
+      color: #fff;
+      padding: 10px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      z-index: 200;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
+    /* ---- SCORE TABLE ---- */
+    .score-table-wrapper {
+      background: var(--card);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      margin-bottom: 12px;
+    }
+
+    .score-table-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .score-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      min-width: 280px;
+    }
+
+    .score-table th {
+      background: var(--primary);
+      color: #fff;
+      font-weight: 600;
+      padding: 10px 8px;
+      text-align: center;
+      white-space: nowrap;
+      font-size: 13px;
+      position: sticky;
+      top: 0;
+    }
+
+    .score-table th:first-child {
+      text-align: left;
+      padding-left: 12px;
+    }
+
+    .score-table td {
+      padding: 10px 8px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+      font-weight: 500;
+    }
+
+    .score-table td:first-child {
+      text-align: left;
+      padding-left: 12px;
+      color: var(--text-light);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .score-table tr.donne-row {
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .score-table tr.donne-row:hover {
+      background: #f8f6f1;
+    }
+
+    .score-table tr.donne-row:active {
+      background: #f0ede5;
+    }
+
+    .score-table tfoot td {
+      font-weight: 700;
+      font-size: 15px;
+      border-top: 2px solid var(--primary);
+      border-bottom: none;
+      padding: 12px 8px;
+    }
+
+    .score-table tfoot td:first-child {
+      font-size: 13px;
+    }
+
+    .score-positive { color: var(--positive); }
+    .score-negative { color: var(--negative); }
+
+    /* ---- DONNE DETAIL (EXPANDABLE) ---- */
+    .donne-detail {
+      display: none;
+    }
+
+    .donne-detail.expanded {
+      display: table-row;
+    }
+
+    .donne-detail td {
+      padding: 12px 14px;
+      background: #fafaf5;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .donne-detail-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 16px;
+    }
+
+    .donne-detail-item {
+      display: inline-block;
+    }
+
+    .donne-detail-item .detail-label {
+      color: var(--text-light);
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    /* ---- CLASSEMENT ---- */
+    .classement-section {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    .classement-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 10px;
+    }
+
+    .classement-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .classement-item:last-child {
+      border-bottom: none;
+    }
+
+    .classement-rank {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-light);
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+
+    .classement-rank.rank-1 {
+      background: #f1c40f;
+      color: #fff;
+    }
+
+    .classement-name {
+      flex: 1;
+      font-weight: 500;
+    }
+
+    .classement-score {
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    /* ---- EMPTY STATE ---- */
+    .empty-state {
+      text-align: center;
+      padding: 40px 16px;
+      color: var(--text-light);
+    }
+
+    .empty-state-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .empty-state-text {
+      font-size: 15px;
+    }
+
+    /* ---- ACTION BUTTONS ---- */
+    .actions-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .btn-danger {
+      width: 100%;
+      height: 48px;
+      background: none;
+      color: var(--accent);
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-danger:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-danger:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .btn-danger:disabled:hover {
+      background: none;
+      color: var(--accent);
+    }
+
+    .btn-secondary {
+      width: 100%;
+      height: 48px;
+      background: none;
+      color: var(--text-light);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--text-light);
+    }
+
+    /* ---- PARTENAIRE SECTION ---- */
+    .partenaire-section {
+      display: none;
+    }
+
+    .partenaire-section.visible {
+      display: block;
+    }
+
+    /* ---- UTILITY ---- */
+    .hidden { display: none !important; }
+  </style>
 </head>
 <body>
-  <h1>Assistant Tarot - Scoring Engine</h1>
-  <p>Ouvrir la console du navigateur (Cmd+Option+J) pour voir les r&eacute;sultats des tests.</p>
+
+  <div class="app-container">
+    <!-- ---- SETUP SCREEN ---- -->
+    <div id="setup-screen" class="setup-screen">
+      <div class="setup-title">Assistant Tarot</div>
+      <div class="setup-subtitle">Compteur de points pour le Tarot francais</div>
+      <div class="setup-card">
+        <span class="setup-label">Nombre de joueurs</span>
+        <div class="player-count-group" id="player-count-group">
+          <button class="player-count-btn" data-count="3">3</button>
+          <button class="player-count-btn active" data-count="4">4</button>
+          <button class="player-count-btn" data-count="5">5</button>
+        </div>
+        <span class="setup-label">Noms des joueurs</span>
+        <div class="player-names" id="player-names"></div>
+        <button class="btn-primary" id="btn-commencer">Commencer la partie</button>
+      </div>
+    </div>
+
+    <!-- ---- MAIN APP ---- -->
+    <div id="main-app" class="main-app">
+      <div class="app-header">Assistant Tarot</div>
+      <div class="tab-bar">
+        <button class="tab-btn active" data-tab="nouvelle-donne">Nouvelle donne</button>
+        <button class="tab-btn" data-tab="partie-en-cours">Partie en cours</button>
+      </div>
+
+      <!-- ---- TOAST ---- -->
+      <div class="toast" id="toast">Donne ajoutee !</div>
+
+      <!-- ---- TAB: NOUVELLE DONNE ---- -->
+      <div class="tab-panel active" id="panel-nouvelle-donne">
+
+        <!-- Preneur -->
+        <div class="form-section">
+          <span class="form-label">Preneur</span>
+          <select class="form-select" id="select-preneur">
+            <option value="">-- Choisir --</option>
+          </select>
+        </div>
+
+        <!-- Partenaire (5 joueurs only) -->
+        <div class="form-section partenaire-section" id="partenaire-section">
+          <span class="form-label">Partenaire (appele)</span>
+          <select class="form-select" id="select-partenaire">
+            <option value="">-- Choisir --</option>
+          </select>
+        </div>
+
+        <!-- Contrat -->
+        <div class="form-section">
+          <span class="form-label">Contrat</span>
+          <div class="segmented">
+            <input type="radio" name="contrat" id="contrat-prise" value="prise">
+            <label for="contrat-prise">Prise</label>
+            <input type="radio" name="contrat" id="contrat-garde" value="garde">
+            <label for="contrat-garde">Garde</label>
+            <input type="radio" name="contrat" id="contrat-gardeSans" value="gardeSans">
+            <label for="contrat-gardeSans">Garde Sans</label>
+            <input type="radio" name="contrat" id="contrat-gardeContre" value="gardeContre">
+            <label for="contrat-gardeContre">Garde Contre</label>
+          </div>
+        </div>
+
+        <!-- Bouts -->
+        <div class="form-section">
+          <span class="form-label">Nombre de bouts</span>
+          <div class="segmented">
+            <input type="radio" name="bouts" id="bouts-0" value="0">
+            <label for="bouts-0">0</label>
+            <input type="radio" name="bouts" id="bouts-1" value="1">
+            <label for="bouts-1">1</label>
+            <input type="radio" name="bouts" id="bouts-2" value="2">
+            <label for="bouts-2">2</label>
+            <input type="radio" name="bouts" id="bouts-3" value="3">
+            <label for="bouts-3">3</label>
+          </div>
+        </div>
+
+        <!-- Points du preneur -->
+        <div class="form-section">
+          <span class="form-label">Points du preneur</span>
+          <div class="number-stepper">
+            <button class="stepper-btn" id="stepper-minus" type="button">&minus;</button>
+            <input type="number" class="stepper-input" id="input-points" min="0" max="91" value="" placeholder="--">
+            <button class="stepper-btn" id="stepper-plus" type="button">+</button>
+          </div>
+        </div>
+
+        <!-- Petit au bout -->
+        <div class="form-section">
+          <span class="form-label">Petit au bout</span>
+          <div class="segmented">
+            <input type="radio" name="petitAuBout" id="petit-non" value="non" checked>
+            <label for="petit-non">Non</label>
+            <input type="radio" name="petitAuBout" id="petit-attaque" value="attaque">
+            <label for="petit-attaque">Attaque</label>
+            <input type="radio" name="petitAuBout" id="petit-defense" value="defense">
+            <label for="petit-defense">Defense</label>
+          </div>
+        </div>
+
+        <!-- Poignee -->
+        <div class="form-section">
+          <span class="form-label" id="poignee-label">Poignee</span>
+          <select class="form-select" id="select-poignee">
+            <option value="non">Non</option>
+            <option value="simple">Simple</option>
+            <option value="double">Double</option>
+            <option value="triple">Triple</option>
+          </select>
+          <div class="poignee-sub hidden" id="poignee-camp-section">
+            <span class="form-label" style="margin-top:8px;">Camp de la poignee</span>
+            <div class="segmented">
+              <input type="radio" name="poigneeCamp" id="poignee-camp-attaque" value="attaque" checked>
+              <label for="poignee-camp-attaque">Attaque</label>
+              <input type="radio" name="poigneeCamp" id="poignee-camp-defense" value="defense">
+              <label for="poignee-camp-defense">Defense</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chelem -->
+        <div class="form-section">
+          <span class="form-label">Chelem</span>
+          <select class="form-select" id="select-chelem">
+            <option value="non">Non</option>
+            <option value="annonceReussi">Annonce reussi</option>
+            <option value="nonAnnonceReussi">Non annonce reussi</option>
+            <option value="annonceChuté">Annonce chute</option>
+          </select>
+        </div>
+
+        <!-- Live Preview -->
+        <div class="preview-section" id="preview-section">
+          <div class="preview-title">Apercu du score</div>
+          <div class="preview-score neutral" id="preview-score">--</div>
+          <div class="preview-breakdown" id="preview-breakdown"></div>
+          <div class="preview-distribution" id="preview-distribution"></div>
+        </div>
+
+        <!-- Validate -->
+        <button class="btn-validate" id="btn-valider">Valider la donne</button>
+      </div>
+
+      <!-- ---- TAB: PARTIE EN COURS ---- -->
+      <div class="tab-panel" id="panel-partie-en-cours">
+        <div id="scores-content"></div>
+        <div class="actions-section">
+          <button class="btn-danger" id="btn-annuler">Annuler derniere donne</button>
+          <button class="btn-secondary" id="btn-nouvelle-partie">Nouvelle partie</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
     // ---- SCORING ENGINE ----
@@ -153,6 +1022,539 @@
       });
       return cumuls;
     }
+
+    // ---- UI LOGIC ----
+
+    const POIGNEE_THRESHOLDS = {
+      3: { simple: 13, double: 15, triple: 18 },
+      4: { simple: 10, double: 13, triple: 15 },
+      5: { simple: 8, double: 10, triple: 13 }
+    };
+
+    const CONTRAT_LABELS = {
+      prise: 'Prise',
+      garde: 'Garde',
+      gardeSans: 'Garde Sans',
+      gardeContre: 'Garde Contre'
+    };
+
+    const CHELEM_LABELS = {
+      non: 'Non',
+      annonceReussi: 'Annonce reussi',
+      nonAnnonceReussi: 'Non annonce reussi',
+      'annonceChuté': 'Annonce chute'
+    };
+
+    // ---- DOM REFERENCES ----
+    const $setupScreen = document.getElementById('setup-screen');
+    const $mainApp = document.getElementById('main-app');
+    const $playerCountGroup = document.getElementById('player-count-group');
+    const $playerNames = document.getElementById('player-names');
+    const $btnCommencer = document.getElementById('btn-commencer');
+    const $selectPreneur = document.getElementById('select-preneur');
+    const $partenaireSection = document.getElementById('partenaire-section');
+    const $selectPartenaire = document.getElementById('select-partenaire');
+    const $inputPoints = document.getElementById('input-points');
+    const $stepperMinus = document.getElementById('stepper-minus');
+    const $stepperPlus = document.getElementById('stepper-plus');
+    const $selectPoignee = document.getElementById('select-poignee');
+    const $poigneeCampSection = document.getElementById('poignee-camp-section');
+    const $poigneeLabel = document.getElementById('poignee-label');
+    const $selectChelem = document.getElementById('select-chelem');
+    const $previewSection = document.getElementById('preview-section');
+    const $previewScore = document.getElementById('preview-score');
+    const $previewBreakdown = document.getElementById('preview-breakdown');
+    const $previewDistribution = document.getElementById('preview-distribution');
+    const $btnValider = document.getElementById('btn-valider');
+    const $scoresContent = document.getElementById('scores-content');
+    const $btnAnnuler = document.getElementById('btn-annuler');
+    const $btnNouvellePartie = document.getElementById('btn-nouvelle-partie');
+    const $toast = document.getElementById('toast');
+
+    let setupNbJoueurs = 4;
+
+    // ---- SETUP SCREEN LOGIC ----
+
+    function renderPlayerInputs() {
+      $playerNames.innerHTML = '';
+      for (let i = 0; i < setupNbJoueurs; i++) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'player-name-input';
+        input.placeholder = `Joueur ${i + 1}`;
+        input.value = `Joueur ${i + 1}`;
+        input.dataset.index = i;
+        $playerNames.appendChild(input);
+      }
+    }
+
+    $playerCountGroup.addEventListener('click', (e) => {
+      const btn = e.target.closest('.player-count-btn');
+      if (!btn) return;
+      setupNbJoueurs = parseInt(btn.dataset.count);
+      $playerCountGroup.querySelectorAll('.player-count-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderPlayerInputs();
+    });
+
+    $btnCommencer.addEventListener('click', () => {
+      const inputs = $playerNames.querySelectorAll('.player-name-input');
+      const noms = [];
+      inputs.forEach((inp, i) => {
+        const v = inp.value.trim();
+        noms.push(v || `Joueur ${i + 1}`);
+      });
+      nouvellePartie(setupNbJoueurs, noms);
+      showMainApp();
+    });
+
+    function showSetup() {
+      $setupScreen.classList.remove('hidden');
+      $mainApp.classList.remove('active');
+    }
+
+    function showMainApp() {
+      $setupScreen.classList.add('hidden');
+      $mainApp.classList.add('active');
+      populatePreneurSelect();
+      updatePartenaireVisibility();
+      updatePoigneeLabels();
+      renderScores();
+    }
+
+    // ---- TAB SWITCHING ----
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    function switchToTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.tab === tabName);
+      });
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + tabName).classList.add('active');
+    }
+
+    // ---- PRENEUR / PARTENAIRE SELECTS ----
+
+    function populatePreneurSelect() {
+      $selectPreneur.innerHTML = '<option value="">-- Choisir --</option>';
+      state.joueurs.forEach((nom, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = nom;
+        $selectPreneur.appendChild(opt);
+      });
+    }
+
+    function updatePartenaireVisibility() {
+      if (state.nbJoueurs === 5) {
+        $partenaireSection.classList.add('visible');
+      } else {
+        $partenaireSection.classList.remove('visible');
+      }
+    }
+
+    function populatePartenaireSelect() {
+      const preneurIdx = $selectPreneur.value;
+      $selectPartenaire.innerHTML = '<option value="">-- Choisir --</option>';
+      state.joueurs.forEach((nom, i) => {
+        if (String(i) === String(preneurIdx)) return;
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = nom;
+        $selectPartenaire.appendChild(opt);
+      });
+    }
+
+    $selectPreneur.addEventListener('change', () => {
+      if (state.nbJoueurs === 5) {
+        populatePartenaireSelect();
+      }
+      updatePreview();
+    });
+
+    $selectPartenaire.addEventListener('change', updatePreview);
+
+    // ---- STEPPER BUTTONS ----
+
+    $stepperMinus.addEventListener('click', () => {
+      let val = parseInt($inputPoints.value);
+      if (isNaN(val)) val = 1;
+      if (val > 0) {
+        $inputPoints.value = val - 1;
+        $inputPoints.dispatchEvent(new Event('input'));
+      }
+    });
+
+    $stepperPlus.addEventListener('click', () => {
+      let val = parseInt($inputPoints.value);
+      if (isNaN(val)) val = -1;
+      if (val < 91) {
+        $inputPoints.value = val + 1;
+        $inputPoints.dispatchEvent(new Event('input'));
+      }
+    });
+
+    $inputPoints.addEventListener('input', updatePreview);
+
+    // ---- POIGNEE LOGIC ----
+
+    function updatePoigneeLabels() {
+      const th = POIGNEE_THRESHOLDS[state.nbJoueurs] || POIGNEE_THRESHOLDS[4];
+      const options = $selectPoignee.querySelectorAll('option');
+      options[0].textContent = 'Non';
+      options[1].textContent = `Simple (${th.simple} atouts)`;
+      options[2].textContent = `Double (${th.double} atouts)`;
+      options[3].textContent = `Triple (${th.triple} atouts)`;
+    }
+
+    $selectPoignee.addEventListener('change', () => {
+      const val = $selectPoignee.value;
+      if (val !== 'non') {
+        $poigneeCampSection.classList.remove('hidden');
+      } else {
+        $poigneeCampSection.classList.add('hidden');
+      }
+      updatePreview();
+    });
+
+    // ---- LIVE PREVIEW ----
+
+    function getFormValues() {
+      const preneurIdx = $selectPreneur.value;
+      const partenaireIdx = state.nbJoueurs === 5 ? $selectPartenaire.value : null;
+      const contratEl = document.querySelector('input[name="contrat"]:checked');
+      const boutsEl = document.querySelector('input[name="bouts"]:checked');
+      const petitEl = document.querySelector('input[name="petitAuBout"]:checked');
+      const pointsVal = $inputPoints.value;
+      const poigneeNiveau = $selectPoignee.value;
+      const poigneeCampEl = document.querySelector('input[name="poigneeCamp"]:checked');
+      const chelem = $selectChelem.value;
+
+      return {
+        preneurIndex: preneurIdx !== '' ? parseInt(preneurIdx) : null,
+        partenaireIndex: partenaireIdx !== '' && partenaireIdx !== null ? parseInt(partenaireIdx) : null,
+        contrat: contratEl ? contratEl.value : null,
+        bouts: boutsEl ? parseInt(boutsEl.value) : null,
+        pointsPreneur: pointsVal !== '' ? parseInt(pointsVal) : null,
+        petitAuBout: petitEl ? petitEl.value : 'non',
+        poignee: poigneeNiveau !== 'non' ? { niveau: poigneeNiveau, camp: poigneeCampEl ? poigneeCampEl.value : 'attaque' } : null,
+        chelem: chelem
+      };
+    }
+
+    function updatePreview() {
+      const vals = getFormValues();
+
+      // Check if we have enough to compute
+      if (vals.contrat === null || vals.bouts === null || vals.pointsPreneur === null || isNaN(vals.pointsPreneur) || vals.pointsPreneur < 0 || vals.pointsPreneur > 91) {
+        $previewScore.textContent = '--';
+        $previewScore.className = 'preview-score neutral';
+        $previewBreakdown.textContent = '';
+        $previewDistribution.textContent = '';
+        return;
+      }
+
+      try {
+        const donneForCalc = {
+          contrat: vals.contrat,
+          bouts: vals.bouts,
+          pointsPreneur: vals.pointsPreneur,
+          petitAuBout: vals.petitAuBout,
+          poignee: vals.poignee,
+          chelem: vals.chelem
+        };
+
+        const total = calculateScore(donneForCalc);
+
+        // Breakdown
+        const seuil = SEUILS[vals.bouts];
+        const mult = MULTIPLICATEURS[vals.contrat];
+        const diff = vals.pointsPreneur - seuil;
+        const gagne = diff >= 0;
+        const scoreBase = (gagne ? 1 : -1) * (25 + Math.abs(diff)) * mult;
+
+        let parts = [`Base: ${scoreBase > 0 ? '+' : ''}${scoreBase}`];
+
+        if (vals.petitAuBout === 'attaque') parts.push(`Petit: +${10 * mult}`);
+        else if (vals.petitAuBout === 'defense') parts.push(`Petit: -${10 * mult}`);
+
+        if (vals.poignee && vals.poignee.niveau !== 'non') {
+          const pVal = POIGNEE_VALS[vals.poignee.niveau];
+          parts.push(`Poignee: ${gagne ? '+' : '-'}${pVal}`);
+        }
+
+        if (vals.chelem === 'annonceReussi') parts.push('Chelem: +400');
+        else if (vals.chelem === 'nonAnnonceReussi') parts.push('Chelem: +200');
+        else if (vals.chelem === 'annonceChuté') parts.push('Chelem: -200');
+
+        const sign = total > 0 ? '+' : '';
+        $previewScore.textContent = `Score preneur : ${sign}${total}`;
+        $previewScore.className = 'preview-score ' + (total > 0 ? 'positive' : total < 0 ? 'negative' : 'neutral');
+        $previewBreakdown.textContent = parts.join(' | ');
+
+        // Show distribution if preneur is selected
+        if (vals.preneurIndex !== null) {
+          let canDistribute = true;
+          if (state.nbJoueurs === 5 && vals.partenaireIndex === null) {
+            canDistribute = false;
+          }
+          if (canDistribute) {
+            try {
+              const dist = distributeScores(total, state.nbJoueurs, vals.preneurIndex, vals.partenaireIndex);
+              let distHtml = '';
+              state.joueurs.forEach((nom, i) => {
+                const s = dist[i];
+                const cls = s > 0 ? 'score-positive' : s < 0 ? 'score-negative' : '';
+                distHtml += `<span class="${cls}">${nom}: ${s > 0 ? '+' : ''}${s}</span>`;
+              });
+              $previewDistribution.innerHTML = distHtml;
+            } catch (e) {
+              $previewDistribution.textContent = '';
+            }
+          } else {
+            $previewDistribution.textContent = '';
+          }
+        } else {
+          $previewDistribution.textContent = '';
+        }
+      } catch (e) {
+        $previewScore.textContent = '--';
+        $previewScore.className = 'preview-score neutral';
+        $previewBreakdown.textContent = '';
+        $previewDistribution.textContent = '';
+      }
+    }
+
+    // Listen to all form changes for live preview
+    document.querySelectorAll('input[name="contrat"], input[name="bouts"], input[name="petitAuBout"], input[name="poigneeCamp"]').forEach(el => {
+      el.addEventListener('change', updatePreview);
+    });
+    $selectChelem.addEventListener('change', updatePreview);
+
+    // ---- FORM VALIDATION & SUBMISSION ----
+
+    $btnValider.addEventListener('click', () => {
+      const vals = getFormValues();
+
+      // Validate
+      const errors = [];
+      if (vals.preneurIndex === null) errors.push('Choisissez un preneur');
+      if (state.nbJoueurs === 5 && vals.partenaireIndex === null) errors.push('Choisissez un partenaire');
+      if (vals.contrat === null) errors.push('Choisissez un contrat');
+      if (vals.bouts === null) errors.push('Choisissez le nombre de bouts');
+      if (vals.pointsPreneur === null || isNaN(vals.pointsPreneur) || vals.pointsPreneur < 0 || vals.pointsPreneur > 91) {
+        errors.push('Entrez les points du preneur (0-91)');
+      }
+
+      if (errors.length > 0) {
+        alert(errors.join('\n'));
+        return;
+      }
+
+      try {
+        const donneParams = {
+          contrat: vals.contrat,
+          bouts: vals.bouts,
+          pointsPreneur: vals.pointsPreneur,
+          petitAuBout: vals.petitAuBout,
+          poignee: vals.poignee,
+          chelem: vals.chelem,
+          preneurIndex: vals.preneurIndex,
+          partenaireIndex: vals.partenaireIndex
+        };
+
+        ajouterDonne(donneParams);
+
+        // Success feedback
+        showToast('Donne ajoutee !');
+
+        // Reset form
+        resetForm();
+
+        // Switch to scores tab
+        switchToTab('partie-en-cours');
+        renderScores();
+      } catch (e) {
+        alert('Erreur: ' + e.message);
+      }
+    });
+
+    function resetForm() {
+      $selectPreneur.value = '';
+      if (state.nbJoueurs === 5) {
+        $selectPartenaire.innerHTML = '<option value="">-- Choisir --</option>';
+      }
+      document.querySelectorAll('input[name="contrat"]').forEach(r => r.checked = false);
+      document.querySelectorAll('input[name="bouts"]').forEach(r => r.checked = false);
+      $inputPoints.value = '';
+      document.getElementById('petit-non').checked = true;
+      $selectPoignee.value = 'non';
+      $poigneeCampSection.classList.add('hidden');
+      document.getElementById('poignee-camp-attaque').checked = true;
+      $selectChelem.value = 'non';
+      $previewScore.textContent = '--';
+      $previewScore.className = 'preview-score neutral';
+      $previewBreakdown.textContent = '';
+      $previewDistribution.textContent = '';
+    }
+
+    function showToast(msg) {
+      $toast.textContent = msg;
+      $toast.classList.add('show');
+      setTimeout(() => $toast.classList.remove('show'), 1800);
+    }
+
+    // ---- SCORES RENDERING ----
+
+    function renderScores() {
+      const donnes = state.donnes;
+      const cumuls = getScoresCumules();
+
+      $btnAnnuler.disabled = donnes.length === 0;
+
+      if (donnes.length === 0) {
+        $scoresContent.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">&#9824;</div>
+            <div class="empty-state-text">Aucune donne enregistree.<br>Ajoutez une donne pour commencer !</div>
+          </div>
+        `;
+        return;
+      }
+
+      // Build score table
+      let html = '<div class="score-table-wrapper"><div class="score-table-scroll"><table class="score-table">';
+      html += '<thead><tr><th>#</th>';
+      state.joueurs.forEach(nom => {
+        html += `<th>${escapeHtml(nom)}</th>`;
+      });
+      html += '</tr></thead><tbody>';
+
+      donnes.forEach((d, idx) => {
+        const rowId = `donne-row-${idx}`;
+        const detailId = `donne-detail-${idx}`;
+        html += `<tr class="donne-row" data-detail="${detailId}" onclick="toggleDetail('${detailId}')">`;
+        html += `<td>${idx + 1}</td>`;
+        d.scores.forEach(s => {
+          const cls = s > 0 ? 'score-positive' : s < 0 ? 'score-negative' : '';
+          html += `<td class="${cls}">${s > 0 ? '+' : ''}${s}</td>`;
+        });
+        html += '</tr>';
+
+        // Detail row
+        html += `<tr class="donne-detail" id="${detailId}"><td colspan="${state.nbJoueurs + 1}">`;
+        html += '<div class="donne-detail-content">';
+        html += `<div class="donne-detail-item"><span class="detail-label">Preneur:</span> ${escapeHtml(state.joueurs[d.preneurIndex])}`;
+        if (state.nbJoueurs === 5 && d.partenaireIndex != null) {
+          html += ` + ${escapeHtml(state.joueurs[d.partenaireIndex])}`;
+        }
+        html += '</div>';
+        html += `<div class="donne-detail-item"><span class="detail-label">Contrat:</span> ${CONTRAT_LABELS[d.contrat] || d.contrat}</div>`;
+        html += `<div class="donne-detail-item"><span class="detail-label">Bouts:</span> ${d.bouts}</div>`;
+        html += `<div class="donne-detail-item"><span class="detail-label">Points:</span> ${d.pointsPreneur}</div>`;
+
+        if (d.petitAuBout && d.petitAuBout !== 'non') {
+          html += `<div class="donne-detail-item"><span class="detail-label">Petit au bout:</span> ${d.petitAuBout === 'attaque' ? 'Attaque' : 'Defense'}</div>`;
+        }
+        if (d.poignee && d.poignee.niveau !== 'non') {
+          html += `<div class="donne-detail-item"><span class="detail-label">Poignee:</span> ${d.poignee.niveau} (${d.poignee.camp})</div>`;
+        }
+        if (d.chelem && d.chelem !== 'non') {
+          html += `<div class="donne-detail-item"><span class="detail-label">Chelem:</span> ${CHELEM_LABELS[d.chelem] || d.chelem}</div>`;
+        }
+
+        const sign = d.total > 0 ? '+' : '';
+        const totalCls = d.total > 0 ? 'score-positive' : d.total < 0 ? 'score-negative' : '';
+        html += `<div class="donne-detail-item"><span class="detail-label">Score preneur:</span> <strong class="${totalCls}">${sign}${d.total}</strong></div>`;
+        html += '</div>';
+        html += '</td></tr>';
+      });
+
+      html += '</tbody><tfoot><tr><td>Total</td>';
+      cumuls.forEach(c => {
+        const cls = c > 0 ? 'score-positive' : c < 0 ? 'score-negative' : '';
+        html += `<td class="${cls}">${c > 0 ? '+' : ''}${c}</td>`;
+      });
+      html += '</tr></tfoot></table></div></div>';
+
+      // Classement
+      const ranking = state.joueurs.map((nom, i) => ({ nom, score: cumuls[i] }));
+      ranking.sort((a, b) => b.score - a.score);
+
+      html += '<div class="classement-section">';
+      html += '<div class="classement-title">Classement</div>';
+      ranking.forEach((r, i) => {
+        const cls = r.score > 0 ? 'score-positive' : r.score < 0 ? 'score-negative' : '';
+        const rankCls = i === 0 ? 'classement-rank rank-1' : 'classement-rank';
+        html += `<div class="classement-item">`;
+        html += `<div class="${rankCls}">${i + 1}</div>`;
+        html += `<div class="classement-name">${escapeHtml(r.nom)}</div>`;
+        html += `<div class="classement-score ${cls}">${r.score > 0 ? '+' : ''}${r.score}</div>`;
+        html += '</div>';
+      });
+      html += '</div>';
+
+      $scoresContent.innerHTML = html;
+    }
+
+    function toggleDetail(detailId) {
+      const row = document.getElementById(detailId);
+      if (row) {
+        row.classList.toggle('expanded');
+      }
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // ---- UNDO & NEW GAME ----
+
+    $btnAnnuler.addEventListener('click', () => {
+      if (state.donnes.length === 0) return;
+      if (confirm('Annuler la derniere donne ?')) {
+        annulerDerniereDonne();
+        renderScores();
+        showToast('Donne annulee');
+      }
+    });
+
+    $btnNouvellePartie.addEventListener('click', () => {
+      if (confirm('Commencer une nouvelle partie ? Les scores actuels seront perdus.')) {
+        state.partieActive = false;
+        saveState();
+        setupNbJoueurs = 4;
+        $playerCountGroup.querySelectorAll('.player-count-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.count === '4');
+        });
+        renderPlayerInputs();
+        showSetup();
+        switchToTab('nouvelle-donne');
+      }
+    });
+
+    // ---- INIT ----
+
+    function init() {
+      renderPlayerInputs();
+      if (state.partieActive) {
+        showMainApp();
+      } else {
+        showSetup();
+      }
+    }
+
+    init();
 
     // ---- TESTS ----
 
