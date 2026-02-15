@@ -1116,6 +1116,35 @@
       border-color: var(--red);
     }
 
+    /* ---- ROW ACTION ICONS ---- */
+    .donne-row-actions {
+      white-space: nowrap;
+      text-align: right;
+      width: 64px;
+      padding-right: 8px !important;
+    }
+
+    .donne-row-actions button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      transition: background 0.2s;
+      line-height: 1;
+      vertical-align: middle;
+      color: var(--gold-dim);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .donne-row-actions button:hover {
+      background: rgba(0,0,0,0.06);
+    }
+
+    .donne-row-actions button:active {
+      background: rgba(0,0,0,0.12);
+    }
+
     /* ---- STATS SECTION ---- */
     .stats-section {
       background: var(--card-bg);
@@ -1295,7 +1324,7 @@
           <label class="form-label" for="input-points">Points du preneur</label>
           <div class="number-stepper">
             <button class="stepper-btn" id="stepper-minus" type="button">&minus;</button>
-            <input type="number" class="stepper-input" id="input-points" min="0" max="91" step="0.5" value="" placeholder="—">
+            <input type="number" inputmode="decimal" class="stepper-input" id="input-points" min="0" max="91" step="0.5" value="" placeholder="—">
             <button class="stepper-btn" id="stepper-plus" type="button">+</button>
           </div>
           <button class="btn-compteur" id="btn-open-compteur" type="button">♠ Compter les cartes</button>
@@ -1992,7 +2021,7 @@
       let html = '<div class="score-table-wrapper"><div class="score-table-scroll"><table class="score-table">';
       html += '<thead><tr><th>#</th>';
       state.joueurs.forEach(nom => { html += `<th>${escapeHtml(nom)}</th>`; });
-      html += '</tr></thead><tbody>';
+      html += '<th></th></tr></thead><tbody>';
 
       donnes.forEach((d, idx) => {
         const detailId = `donne-detail-${idx}`;
@@ -2002,9 +2031,13 @@
           const cls = s > 0 ? 'score-positive' : s < 0 ? 'score-negative' : '';
           html += `<td class="${cls}">${s > 0 ? '+' : ''}${s}</td>`;
         });
+        html += `<td class="donne-row-actions">`;
+        html += `<button onclick="event.stopPropagation(); editDonne(${idx})" title="Modifier"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 1.5l3 3L5 14H2v-3L11.5 1.5z"/></svg></button>`;
+        html += `<button onclick="event.stopPropagation(); deleteDonne(${idx})" title="Supprimer" style="color:var(--red)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h12M5.3 4V2.7a1 1 0 011-1h3.4a1 1 0 011 1V4M6 7v5M10 7v5"/><path d="M3.3 4l.7 9.3a1 1 0 001 .7h6a1 1 0 001-.7L12.7 4"/></svg></button>`;
+        html += `</td>`;
         html += '</tr>';
 
-        html += `<tr class="donne-detail" id="${detailId}"><td colspan="${state.nbJoueurs + 1}">`;
+        html += `<tr class="donne-detail" id="${detailId}"><td colspan="${state.nbJoueurs + 2}">`;
         html += '<div class="donne-detail-content">';
         html += `<div class="donne-detail-item"><span class="detail-label">Preneur:</span> ${escapeHtml(state.joueurs[d.preneurIndex])}`;
         if (state.nbJoueurs === 5 && d.partenaireIndex != null) {
@@ -2040,7 +2073,7 @@
         const cls = c > 0 ? 'score-positive' : c < 0 ? 'score-negative' : '';
         html += `<td class="${cls}">${c > 0 ? '+' : ''}${c}</td>`;
       });
-      html += '</tr></tfoot></table></div></div>';
+      html += '<td></td></tr></tfoot></table></div></div>';
 
       const ranking = state.joueurs.map((nom, i) => ({ nom, score: cumuls[i] }));
       ranking.sort((a, b) => b.score - a.score);
