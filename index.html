@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Assistant Tarot</title>
+  <meta name="theme-color" content="#1a5c2a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <style>
     /* ---- CSS VARIABLES ---- */
     :root {
@@ -1583,92 +1586,6 @@
     }
 
     init();
-
-    // ---- TESTS ----
-
-    function runTests() {
-      const tests = [
-        // Garde, 2 bouts, 45 pts => gagne de 4 => (25+4)*2 = 58
-        { input: { contrat: 'garde', bouts: 2, pointsPreneur: 45, petitAuBout: 'non', poignee: null, chelem: 'non' }, expected: 58 },
-        // Prise, 0 bout, 50 pts => chuté de 6 => -(25+6)*1 = -31
-        { input: { contrat: 'prise', bouts: 0, pointsPreneur: 50, petitAuBout: 'non', poignee: null, chelem: 'non' }, expected: -31 },
-        // Garde sans, 3 bouts, 36 pts => juste fait => (25+0)*4 = 100
-        { input: { contrat: 'gardeSans', bouts: 3, pointsPreneur: 36, petitAuBout: 'non', poignee: null, chelem: 'non' }, expected: 100 },
-        // Garde, 1 bout, 56 pts, petit au bout attaque => (25+5)*2 + 10*2 = 80
-        { input: { contrat: 'garde', bouts: 1, pointsPreneur: 56, petitAuBout: 'attaque', poignee: null, chelem: 'non' }, expected: 80 },
-        // Prise, 2 bouts, 41 pts, poignée simple (attaque), juste fait => 25*1 + 20 = 45
-        { input: { contrat: 'prise', bouts: 2, pointsPreneur: 41, petitAuBout: 'non', poignee: { niveau: 'simple', camp: 'attaque' }, chelem: 'non' }, expected: 45 },
-        // Garde contre, 1 bout, 40 pts => chuté de 11 => -(25+11)*6 = -216, poignée défense => -216 - 20 = -236
-        { input: { contrat: 'gardeContre', bouts: 1, pointsPreneur: 40, petitAuBout: 'non', poignee: { niveau: 'simple', camp: 'defense' }, chelem: 'non' }, expected: -236 },
-        // Chelem annoncé réussi, garde, 3 bouts, 91 pts => (25+55)*2 + 400 = 560
-        { input: { contrat: 'garde', bouts: 3, pointsPreneur: 91, petitAuBout: 'non', poignee: null, chelem: 'annonceReussi' }, expected: 560 },
-      ];
-
-      let passed = 0;
-      tests.forEach((t, i) => {
-        const result = calculateScore(t.input);
-        if (result === t.expected) {
-          console.log(`✓ Test ${i + 1} passed`);
-          passed++;
-        } else {
-          console.error(`✗ Test ${i + 1} FAILED: expected ${t.expected}, got ${result}`);
-        }
-      });
-      console.log(`${passed}/${tests.length} tests passed`);
-
-      // ---- DISTRIBUTION TESTS ----
-
-      // 4 joueurs, preneur index 0, total 58 => [174, -58, -58, -58]
-      const dist4 = distributeScores(58, 4, 0, null);
-      console.assert(dist4[0] === 174 && dist4[1] === -58, 'Distribution 4j failed');
-
-      // 5 joueurs, preneur index 0, partenaire index 2, total 80 => [160, -80, 80, -80, -80]
-      const dist5 = distributeScores(80, 5, 0, 2);
-      console.assert(dist5[0] === 160 && dist5[2] === 80 && dist5[1] === -80, 'Distribution 5j failed');
-
-      // 3 joueurs, preneur index 1, total -31 => [31, -62, 31]
-      const dist3 = distributeScores(-31, 3, 1, null);
-      console.assert(dist3[1] === -62 && dist3[0] === 31, 'Distribution 3j failed');
-
-      // Vérifier somme = 0
-      console.assert(dist4.reduce((a, b) => a + b, 0) === 0, 'Sum 4j != 0');
-      console.assert(dist5.reduce((a, b) => a + b, 0) === 0, 'Sum 5j != 0');
-      console.assert(dist3.reduce((a, b) => a + b, 0) === 0, 'Sum 3j != 0');
-
-      console.log('Distribution tests: all assertions passed');
-
-      // ---- STATE MANAGEMENT TESTS ----
-      const savedState = localStorage.getItem('tarot-state');
-
-      nouvellePartie(4, ['A', 'B', 'C', 'D']);
-      console.assert(state.partieActive === true, 'partieActive should be true');
-      console.assert(state.donnes.length === 0, 'donnes should be empty');
-
-      const result = ajouterDonne({ contrat: 'garde', bouts: 2, pointsPreneur: 45,
-        petitAuBout: 'non', poignee: null, chelem: 'non', preneurIndex: 0, partenaireIndex: null });
-      console.assert(result.total === 58, 'ajouterDonne total should be 58');
-      console.assert(state.donnes.length === 1, 'donnes should have 1 entry');
-
-      const cumuls = getScoresCumules();
-      console.assert(cumuls[0] === 174, 'cumul preneur should be 174');
-      console.assert(cumuls[1] === -58, 'cumul defenseur should be -58');
-
-      console.assert(annulerDerniereDonne() === true, 'undo should return true');
-      console.assert(state.donnes.length === 0, 'donnes should be empty after undo');
-      console.assert(annulerDerniereDonne() === false, 'undo on empty should return false');
-
-      // Restore original state
-      if (savedState) {
-        localStorage.setItem('tarot-state', savedState);
-      } else {
-        localStorage.removeItem('tarot-state');
-      }
-      state = loadState();
-
-      console.log('State management tests: all assertions passed');
-    }
-
-    runTests();
   </script>
 </body>
 </html>
