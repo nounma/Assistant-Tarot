@@ -109,9 +109,9 @@
     function loadState() {
       try {
         const saved = localStorage.getItem('tarot-state');
-        return saved ? JSON.parse(saved) : { ...DEFAULT_STATE, joueurs: [...DEFAULT_STATE.joueurs] };
+        return saved ? JSON.parse(saved) : { ...DEFAULT_STATE, joueurs: [...DEFAULT_STATE.joueurs], donnes: [] };
       } catch {
-        return { ...DEFAULT_STATE, joueurs: [...DEFAULT_STATE.joueurs] };
+        return { ...DEFAULT_STATE, joueurs: [...DEFAULT_STATE.joueurs], donnes: [] };
       }
     }
 
@@ -206,6 +206,36 @@
       console.assert(dist3.reduce((a, b) => a + b, 0) === 0, 'Sum 3j != 0');
 
       console.log('Distribution tests: all assertions passed');
+
+      // ---- STATE MANAGEMENT TESTS ----
+      const savedState = localStorage.getItem('tarot-state');
+
+      nouvellePartie(4, ['A', 'B', 'C', 'D']);
+      console.assert(state.partieActive === true, 'partieActive should be true');
+      console.assert(state.donnes.length === 0, 'donnes should be empty');
+
+      const result = ajouterDonne({ contrat: 'garde', bouts: 2, pointsPreneur: 45,
+        petitAuBout: 'non', poignee: null, chelem: 'non', preneurIndex: 0, partenaireIndex: null });
+      console.assert(result.total === 58, 'ajouterDonne total should be 58');
+      console.assert(state.donnes.length === 1, 'donnes should have 1 entry');
+
+      const cumuls = getScoresCumules();
+      console.assert(cumuls[0] === 174, 'cumul preneur should be 174');
+      console.assert(cumuls[1] === -58, 'cumul defenseur should be -58');
+
+      console.assert(annulerDerniereDonne() === true, 'undo should return true');
+      console.assert(state.donnes.length === 0, 'donnes should be empty after undo');
+      console.assert(annulerDerniereDonne() === false, 'undo on empty should return false');
+
+      // Restore original state
+      if (savedState) {
+        localStorage.setItem('tarot-state', savedState);
+      } else {
+        localStorage.removeItem('tarot-state');
+      }
+      state = loadState();
+
+      console.log('State management tests: all assertions passed');
     }
 
     runTests();
