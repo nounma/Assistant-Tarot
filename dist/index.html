@@ -264,6 +264,7 @@
       gap: 12px;
       border-bottom: 1px solid rgba(201,168,76,0.2);
       backdrop-filter: blur(8px);
+      position: relative;
     }
 
     .header-title {
@@ -1240,13 +1241,473 @@
     }
 
     .form-warnings.visible { display: block; }
+
+    /* ---- CHRONO ---- */
+    .header-chrono {
+      position: absolute;
+      left: 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: var(--gold-dim);
+      letter-spacing: 0.5px;
+    }
+
+    /* ---- HELP BUTTON ---- */
+    .btn-help {
+      position: absolute;
+      right: 16px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gold-dim);
+      background: transparent;
+      color: var(--gold);
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .btn-help:hover {
+      background: rgba(201,168,76,0.15);
+      border-color: var(--gold);
+    }
+
+    .btn-voice {
+      position: absolute;
+      right: 52px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gold-dim);
+      background: transparent;
+      color: var(--gold);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .btn-voice:hover {
+      background: rgba(201,168,76,0.15);
+      border-color: var(--gold);
+    }
+
+    .btn-help-setup {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(201,168,76,0.3);
+      background: transparent;
+      color: var(--gold-dim);
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+
+    .btn-help-setup:hover {
+      color: var(--gold);
+      border-color: var(--gold);
+    }
+
+    /* ---- DEALER INDICATOR ---- */
+    .dealer-indicator {
+      background: linear-gradient(135deg, var(--felt-dark) 0%, var(--felt) 100%);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      border: 1px solid rgba(201,168,76,0.2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dealer-icon { font-size: 20px; }
+
+    .dealer-text {
+      font-family: var(--font-display);
+      font-size: 15px;
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    .dealer-name {
+      color: var(--gold-light);
+      font-weight: 700;
+    }
+
+    .btn-passe {
+      width: 100%;
+      height: 46px;
+      margin-bottom: 10px;
+      background: transparent;
+      color: var(--gold-dim);
+      border: 1.5px dashed rgba(201,168,76,0.3);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-passe:hover {
+      color: var(--gold);
+      border-color: rgba(201,168,76,0.5);
+      background: rgba(201,168,76,0.05);
+    }
+
+    /* ---- PASSED DONNE IN TABLE ---- */
+    .donne-row.donne-passee td {
+      color: var(--text-muted) !important;
+      opacity: 0.55;
+      font-style: italic;
+    }
+
+    /* ---- HISTORY ---- */
+    .btn-history {
+      width: 100%;
+      height: 46px;
+      margin-top: 14px;
+      background: transparent;
+      color: var(--gold-dim);
+      border: 1.5px solid rgba(201,168,76,0.2);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-history:hover {
+      color: var(--gold);
+      border-color: rgba(201,168,76,0.4);
+    }
+
+    .history-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    .history-overlay.hidden { display: none !important; }
+
+    .history-modal {
+      background: var(--card-bg);
+      max-width: 440px;
+      width: 92%;
+      max-height: 85vh;
+      overflow-y: auto;
+      border-radius: var(--radius);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      border: 1px solid rgba(201,168,76,0.15);
+    }
+
+    .history-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, var(--felt-dark) 0%, var(--felt) 100%);
+      padding: 16px 18px;
+      border-radius: var(--radius) var(--radius) 0 0;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .history-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .history-close {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: rgba(255,255,255,0.08);
+      color: var(--gold-dim);
+      font-size: 22px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .history-close:hover { background: rgba(255,255,255,0.15); color: var(--gold); }
+
+    .history-empty {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-family: var(--font-display);
+      font-style: italic;
+    }
+
+    .history-card {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .history-card:last-child { border-bottom: none; }
+
+    .history-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .history-date {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .history-duration {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: var(--gold-dim);
+    }
+
+    .history-players {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .history-scores {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 14px;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .history-winner {
+      font-size: 12px;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .history-donnes-info {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .history-delete {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .history-delete:hover {
+      color: var(--red);
+      background: rgba(196,69,54,0.08);
+    }
+
+    /* ---- MANUAL INPUT COMPTEUR ---- */
+    .compteur-value-input {
+      width: 40px;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      border: none;
+      border-left: 1px solid var(--cream-dark);
+      border-right: 1px solid var(--cream-dark);
+      height: 42px;
+      line-height: 42px;
+      background: var(--cream);
+      -moz-appearance: textfield;
+      padding: 0;
+    }
+
+    .compteur-value-input::-webkit-outer-spin-button,
+    .compteur-value-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .compteur-value-input:focus {
+      outline: none;
+      background: #fff;
+    }
+
+    /* ---- RULES MODAL ---- */
+    .rules-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    .rules-overlay.hidden { display: none !important; }
+
+    .rules-modal {
+      background: var(--card-bg);
+      max-width: 440px;
+      width: 92%;
+      max-height: 85vh;
+      overflow-y: auto;
+      border-radius: var(--radius);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      border: 1px solid rgba(201,168,76,0.15);
+    }
+
+    .rules-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, var(--felt-dark) 0%, var(--felt) 100%);
+      padding: 16px 18px;
+      border-radius: var(--radius) var(--radius) 0 0;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .rules-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .rules-close {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: rgba(255,255,255,0.08);
+      color: var(--gold-dim);
+      font-size: 22px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .rules-close:hover { background: rgba(255,255,255,0.15); color: var(--gold); }
+
+    .rules-content {
+      padding: 18px;
+    }
+
+    .rules-content h3 {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--gold-dim);
+      margin: 18px 0 8px;
+    }
+
+    .rules-content h3:first-child { margin-top: 0; }
+
+    .rules-content p, .rules-content ul {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.7;
+      margin-bottom: 8px;
+    }
+
+    .rules-content ul { padding-left: 18px; }
+
+    .rules-content li { margin-bottom: 4px; }
+
+    .rules-content .rules-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin: 8px 0;
+    }
+
+    .rules-content .rules-table th,
+    .rules-content .rules-table td {
+      padding: 6px 10px;
+      border: 1px solid var(--border-subtle);
+      text-align: center;
+    }
+
+    .rules-content .rules-table th {
+      background: var(--cream);
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* ---- TERMINER PARTIE BUTTON ---- */
+    .btn-terminer {
+      width: 100%;
+      height: 50px;
+      background: linear-gradient(135deg, var(--gold-dim) 0%, var(--gold) 50%, var(--gold-light) 100%);
+      color: var(--felt-dark);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-terminer:hover {
+      box-shadow: 0 3px 15px rgba(201,168,76,0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-terminer:active { transform: scale(0.98); }
   </style>
 </head>
 <body>
 
   <div class="app-container">
     <!-- ---- SETUP SCREEN ---- -->
-    <div id="setup-screen" class="setup-screen">
+    <div id="setup-screen" class="setup-screen" style="position:relative;">
+      <button class="btn-help-setup" id="btn-help-setup" type="button">?</button>
       <div class="setup-logo">Assistant Tarot</div>
       <div class="setup-suit">&#9824; &#9829; &#9830; &#9827;</div>
       <div class="setup-subtitle">Compteur de points pour le Tarot français</div>
@@ -1260,14 +1721,18 @@
         <span class="setup-label">Noms des joueurs</span>
         <div class="player-names" id="player-names"></div>
         <button class="btn-primary" id="btn-commencer">Commencer la partie</button>
+        <button class="btn-history" id="btn-history" type="button">Historique des parties</button>
       </div>
     </div>
 
     <!-- ---- MAIN APP ---- -->
     <div id="main-app" class="main-app">
       <div class="app-header">
+        <span id="chrono" class="header-chrono"></span>
         <span class="header-title">Assistant Tarot</span>
         <span class="header-suit">&#9824; &#9829;</span>
+        <button class="btn-voice" id="btn-voice" type="button">🔊</button>
+        <button class="btn-help" id="btn-help" type="button">?</button>
       </div>
       <div class="tab-bar">
         <button class="tab-btn active" data-tab="nouvelle-donne">Nouvelle donne</button>
@@ -1278,6 +1743,13 @@
 
       <!-- ---- TAB: NOUVELLE DONNE ---- -->
       <div class="tab-panel active" id="panel-nouvelle-donne">
+
+        <div class="dealer-indicator" id="dealer-indicator">
+          <span class="dealer-icon">&#127183;</span>
+          <span class="dealer-text">Distributeur : <span class="dealer-name" id="dealer-name"></span></span>
+        </div>
+
+        <button class="btn-passe" id="btn-passe" type="button">Personne n'a pris</button>
 
         <div class="form-section">
           <label class="form-label" for="select-preneur">Preneur</label>
@@ -1390,6 +1862,7 @@
         <div id="scores-content"></div>
         <div id="stats-content"></div>
         <div class="actions-section">
+          <button class="btn-terminer" id="btn-terminer-partie">Terminer la partie</button>
           <button class="btn-secondary" id="btn-nouvelle-partie">Nouvelle partie</button>
         </div>
       </div>
@@ -1416,7 +1889,7 @@
             <span class="compteur-label">Rois</span>
             <div class="compteur-stepper">
               <button type="button" class="compteur-btn" data-card="roi" data-dir="-1">&minus;</button>
-              <span class="compteur-value" data-card-count="roi">0</span>
+              <input type="number" class="compteur-value-input" data-card-count="roi" value="0" min="0" max="4">
               <button type="button" class="compteur-btn" data-card="roi" data-dir="1">+</button>
             </div>
             <span class="compteur-pts" data-card-pts="roi">0</span>
@@ -1425,7 +1898,7 @@
             <span class="compteur-label">Dames</span>
             <div class="compteur-stepper">
               <button type="button" class="compteur-btn" data-card="dame" data-dir="-1">&minus;</button>
-              <span class="compteur-value" data-card-count="dame">0</span>
+              <input type="number" class="compteur-value-input" data-card-count="dame" value="0" min="0" max="4">
               <button type="button" class="compteur-btn" data-card="dame" data-dir="1">+</button>
             </div>
             <span class="compteur-pts" data-card-pts="dame">0</span>
@@ -1434,7 +1907,7 @@
             <span class="compteur-label">Cavaliers</span>
             <div class="compteur-stepper">
               <button type="button" class="compteur-btn" data-card="cavalier" data-dir="-1">&minus;</button>
-              <span class="compteur-value" data-card-count="cavalier">0</span>
+              <input type="number" class="compteur-value-input" data-card-count="cavalier" value="0" min="0" max="4">
               <button type="button" class="compteur-btn" data-card="cavalier" data-dir="1">+</button>
             </div>
             <span class="compteur-pts" data-card-pts="cavalier">0</span>
@@ -1443,7 +1916,7 @@
             <span class="compteur-label">Valets</span>
             <div class="compteur-stepper">
               <button type="button" class="compteur-btn" data-card="valet" data-dir="-1">&minus;</button>
-              <span class="compteur-value" data-card-count="valet">0</span>
+              <input type="number" class="compteur-value-input" data-card-count="valet" value="0" min="0" max="4">
               <button type="button" class="compteur-btn" data-card="valet" data-dir="1">+</button>
             </div>
             <span class="compteur-pts" data-card-pts="valet">0</span>
@@ -1456,7 +1929,7 @@
             <span class="compteur-label">Atouts & cartes basses</span>
             <div class="compteur-stepper">
               <button type="button" class="compteur-btn" data-card="petite" data-dir="-1">&minus;</button>
-              <span class="compteur-value" data-card-count="petite">0</span>
+              <input type="number" class="compteur-value-input" data-card-count="petite" value="0" min="0" max="59">
               <button type="button" class="compteur-btn" data-card="petite" data-dir="1">+</button>
             </div>
             <span class="compteur-pts" data-card-pts="petite">0</span>
@@ -1481,6 +1954,160 @@
       </div>
     </div>
 
+    </div>
+
+    <!-- ---- HISTORY OVERLAY ---- -->
+    <div class="history-overlay hidden" id="history-overlay">
+      <div class="history-modal">
+        <div class="history-header">
+          <h2 class="history-title">Historique</h2>
+          <button class="history-close" id="history-close" type="button">&times;</button>
+        </div>
+        <div id="history-content"></div>
+      </div>
+    </div>
+
+    <!-- ---- RULES OVERLAY ---- -->
+    <div class="rules-overlay hidden" id="rules-overlay">
+      <div class="rules-modal">
+        <div class="rules-header">
+          <h2 class="rules-title">Regles du Tarot</h2>
+          <button class="rules-close" id="rules-close" type="button">&times;</button>
+        </div>
+        <div class="rules-content">
+          <h3>Le jeu</h3>
+          <p>Le Tarot se joue avec un jeu de <strong>78 cartes</strong> reparties en :</p>
+          <ul>
+            <li><strong>4 couleurs</strong> (Coeur, Carreau, Trefle, Pique) de 14 cartes chacune : du 1 au 10, puis Valet, Cavalier, Dame et Roi.</li>
+            <li><strong>21 atouts</strong> numerotes de 1 a 21. L'atout le plus fort est le 21, le plus faible est le 1 (le Petit).</li>
+            <li><strong>L'Excuse</strong>, carte speciale sans numero, qui ne fait partie d'aucune couleur ni des atouts.</li>
+          </ul>
+          <p>Le jeu se pratique a <strong>3, 4 ou 5 joueurs</strong>. A 5, le preneur appelle un partenaire en designant un Roi.</p>
+          <p><strong>Hierarchie dans une couleur</strong> (de la plus forte a la plus faible) : Roi, Dame, Cavalier, Valet, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1.</p>
+
+          <h3>La distribution</h3>
+          <p>Le donneur est determine au hasard pour la premiere donne, puis tourne dans le sens inverse des aiguilles d'une montre (sens du jeu). Le jeu est battu par le joueur en face du donneur, puis coupe par son voisin de gauche. Le donneur distribue ensuite les cartes <strong>par paquets de 3</strong>, dans le sens inverse des aiguilles d'une montre.</p>
+          <p>Au cours de la distribution, le donneur constitue <strong>carte par carte</strong> un tas de 6 cartes face cachee au centre de la table : c'est le <strong>chien</strong>. Il est interdit d'y mettre la premiere ou la derniere carte du paquet.</p>
+          <table class="rules-table">
+            <thead><tr><th>Joueurs</th><th>Cartes par joueur</th><th>Chien</th></tr></thead>
+            <tbody>
+              <tr><td>3</td><td>24</td><td>6</td></tr>
+              <tr><td>4</td><td>18</td><td>6</td></tr>
+              <tr><td>5</td><td>15</td><td>3</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Les encheres</h3>
+          <p>Le joueur place a droite du donneur parle en premier. Puis la parole passe a son voisin de droite, et ainsi de suite dans le sens inverse des aiguilles d'une montre, jusqu'au donneur. Chaque joueur ne peut parler qu'une seule fois : il passe ou fait une enchere superieure a la precedente. Les quatre niveaux d'encheres sont :</p>
+          <ul>
+            <li><strong>Prise</strong> (ou Petite, multiplicateur x1) : le preneur recupere le chien.</li>
+            <li><strong>Garde</strong> (multiplicateur x2) : le preneur recupere le chien.</li>
+            <li><strong>Garde Sans le chien</strong> (multiplicateur x4) : le chien est mis de cote face cachee, personne ne le voit. Ses points comptent pour le preneur.</li>
+            <li><strong>Garde Contre le chien</strong> (multiplicateur x6) : le chien est mis de cote face cachee. Ses points comptent pour la defense.</li>
+          </ul>
+          <p>Le tour d'encheres se termine quand tous les joueurs ont parle. Le joueur ayant fait l'enchere la plus elevee devient le <strong>preneur</strong> et joue seul contre les autres (la defense). Si tous les joueurs passent, la donne est annulee et le joueur suivant distribue.</p>
+
+          <h3>L'ecart (le chien)</h3>
+          <p>En cas de Prise ou de Garde, le chien est retourne face visible pour que tous les joueurs le voient. Le preneur integre ensuite ces 6 cartes a son jeu, puis ecarte 6 cartes de son choix, face cachee. Ces cartes ecartees compteront dans ses plis en fin de partie.</p>
+          <p><strong>Regles de l'ecart :</strong></p>
+          <ul>
+            <li>On ne peut <strong>jamais</strong> ecarter un bout (Petit, 21, Excuse).</li>
+            <li>On ne peut <strong>jamais</strong> ecarter un Roi.</li>
+            <li>On peut ecarter un atout uniquement si on ne peut pas faire autrement (pas assez de cartes non-atout a ecarter). Dans ce cas, les atouts ecartes doivent etre montres aux defenseurs.</li>
+          </ul>
+
+          <h3>Le jeu de la carte</h3>
+          <p>Le joueur a droite du donneur entame le premier pli. Le jeu se deroule dans le sens <strong>inverse des aiguilles d'une montre</strong>. A chaque pli, chaque joueur pose une carte selon les regles suivantes :</p>
+          <ul>
+            <li><strong>Fournir</strong> : si on possede une carte de la couleur demandee, on doit obligatoirement en jouer une.</li>
+            <li><strong>Couper</strong> : si on n'a pas la couleur demandee, on doit jouer un atout.</li>
+            <li><strong>Surcouper</strong> : si un atout a deja ete joue dans le pli, on doit jouer un atout superieur si on en possede un. Sinon, on peut jouer un atout inferieur (on dit qu'on « pisse »).</li>
+            <li><strong>Defausser</strong> : si on n'a ni la couleur demandee ni d'atout, on joue une carte de son choix.</li>
+          </ul>
+          <p>Le pli est remporte par le joueur ayant joue l'atout le plus fort, ou a defaut la carte la plus forte dans la couleur demandee.</p>
+
+          <h3>L'Excuse</h3>
+          <p>L'Excuse est une carte speciale qui peut etre jouee <strong>a n'importe quel moment</strong>, quelle que soit la couleur demandee. Elle ne remporte jamais le pli.</p>
+          <p>Quand on joue l'Excuse, on la recupere a la fin du pli et on la place dans ses propres plis. En echange, on cede au camp adverse une carte sans valeur (0.5 point) prise parmi ses plis.</p>
+          <p><strong>Exception au dernier pli</strong> : si l'Excuse est jouee au dernier pli, elle change de camp et revient a l'equipe qui remporte ce pli (sauf en cas de Chelem).</p>
+
+          <h3>Le Petit</h3>
+          <p>Le Petit (1 d'atout) a une double nature : c'est a la fois un <strong>bout precieux</strong> (il facilite le contrat du preneur) et l'<strong>atout le plus faible</strong>. Il peut etre capture par n'importe quel autre atout joue dans le meme pli. Il faut donc le proteger en le jouant au bon moment, si possible quand il est maitre ou accompagne d'atouts forts.</p>
+
+          <h3>Les bouts (ou oudlers)</h3>
+          <p>Les 3 bouts sont : le <strong>Petit</strong> (1 d'atout), le <strong>21 d'atout</strong> et l'<strong>Excuse</strong>. Plus le preneur possede de bouts dans ses plis en fin de partie, moins il a besoin de points pour remplir son contrat :</p>
+          <table class="rules-table">
+            <thead><tr><th>Bouts gagnes</th><th>Points requis</th></tr></thead>
+            <tbody>
+              <tr><td>0 bout</td><td>56 points</td></tr>
+              <tr><td>1 bout</td><td>51 points</td></tr>
+              <tr><td>2 bouts</td><td>41 points</td></tr>
+              <tr><td>3 bouts</td><td>36 points</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Valeur des cartes</h3>
+          <p>Le comptage se fait <strong>par paires</strong> : on associe chaque carte a une carte basse (0.5 point). Les valeurs individuelles sont :</p>
+          <table class="rules-table">
+            <thead><tr><th>Carte</th><th>Points</th></tr></thead>
+            <tbody>
+              <tr><td>Bout (Petit, 21, Excuse)</td><td>4.5</td></tr>
+              <tr><td>Roi</td><td>4.5</td></tr>
+              <tr><td>Dame</td><td>3.5</td></tr>
+              <tr><td>Cavalier</td><td>2.5</td></tr>
+              <tr><td>Valet</td><td>1.5</td></tr>
+              <tr><td>Autre carte</td><td>0.5</td></tr>
+            </tbody>
+          </table>
+          <p>Le total de points dans le jeu est toujours de <strong>91 points</strong>.</p>
+          <p><strong>Methode de comptage par paires :</strong> on regroupe les cartes deux par deux, en associant chaque habillage (Roi, Dame, etc.) ou bout a une carte basse. Un Roi (4.5) + une carte basse (0.5) = 5 points. Deux cartes basses = 1 point. Cette methode simplifie le comptage.</p>
+
+          <h3>Calcul du score</h3>
+          <p>A la fin de la donne, on compte les points du preneur dans ses plis (y compris l'ecart). La formule est :</p>
+          <p><strong>Score = (25 + |ecart|) x multiplicateur</strong></p>
+          <p>L'ecart est la difference entre les points du preneur et le seuil requis selon ses bouts. Si le preneur atteint ou depasse le seuil, le score est positif (il gagne). Sinon, le score est negatif (il perd).</p>
+          <p><strong>Exemple :</strong> Le preneur en Garde (x2) a 2 bouts et 45 points. Seuil requis : 41. Ecart : 45 - 41 = 4. Score = (25 + 4) x 2 = <strong>58 points</strong>. Le preneur gagne 58 points.</p>
+          <p><strong>Exemple de chute :</strong> Le preneur en Prise (x1) a 1 bout et 47 points. Seuil requis : 51. Ecart : 47 - 51 = -4. Score = (25 + 4) x 1 = <strong>-29 points</strong>. Le preneur perd 29 points.</p>
+
+          <h3>Les primes</h3>
+          <p>Des primes s'ajoutent (ou se retranchent) au score de base. Elles ne sont <strong>pas multipliees</strong> par le contrat, sauf le Petit au bout.</p>
+
+          <p><strong>Petit au bout</strong></p>
+          <p>Si le camp qui remporte le dernier pli l'a gagne avec le Petit, une prime de <strong>10 x multiplicateur du contrat</strong> est attribuee. Si c'est le camp du preneur, elle lui est ajoutee ; si c'est la defense, elle est soustraite du score du preneur.</p>
+
+          <p><strong>Poignee (annonce d'atouts)</strong></p>
+          <p>Avant de jouer sa premiere carte, un joueur peut annoncer une Poignee en montrant ses atouts classes par ordre decroissant. L'Excuse peut remplacer un atout manquant, mais sa presence dans la Poignee implique que l'annonceur ne possede pas d'autre atout cache. L'annonce est <strong>irrevocable</strong>. La prime est gagnee par le camp <strong>victorieux</strong> de la donne (que l'annonceur gagne ou perde).</p>
+          <table class="rules-table">
+            <thead><tr><th>Poignee</th><th>3 joueurs</th><th>4 joueurs</th><th>5 joueurs</th><th>Prime</th></tr></thead>
+            <tbody>
+              <tr><td>Simple</td><td>13 atouts</td><td>10 atouts</td><td>8 atouts</td><td>20</td></tr>
+              <tr><td>Double</td><td>15 atouts</td><td>13 atouts</td><td>10 atouts</td><td>30</td></tr>
+              <tr><td>Triple</td><td>18 atouts</td><td>15 atouts</td><td>13 atouts</td><td>40</td></tr>
+            </tbody>
+          </table>
+
+          <p><strong>Chelem</strong></p>
+          <p>Le Chelem consiste a remporter <strong>tous les plis</strong>.</p>
+          <ul>
+            <li><strong>Chelem annonce et reussi</strong> : +400 points</li>
+            <li><strong>Chelem non annonce mais reussi</strong> : +200 points</li>
+            <li><strong>Chelem annonce et chute</strong> : -200 points</li>
+          </ul>
+          <p>Si le Chelem est annonce, l'entame revient de droit au joueur qui l'a demande. S'il detient l'Excuse, il doit la jouer en dernier ; le Petit est alors considere au bout s'il est mene a l'avant-dernier pli. La defense peut aussi infliger un Chelem au preneur : chaque defenseur recoit alors une prime supplementaire de 200 points.</p>
+
+          <h3>Repartition des scores</h3>
+          <p>Le score final est reparti entre tous les joueurs de facon equilibree :</p>
+          <ul>
+            <li><strong>A 3 joueurs</strong> : le preneur marque <strong>2 x le score</strong>, chaque defenseur marque <strong>-1 x le score</strong>.</li>
+            <li><strong>A 4 joueurs</strong> : le preneur marque <strong>3 x le score</strong>, chaque defenseur marque <strong>-1 x le score</strong>.</li>
+            <li><strong>A 5 joueurs</strong> : le preneur marque <strong>2 x le score</strong>, son partenaire (l'appele) marque <strong>1 x le score</strong>, chaque defenseur marque <strong>-1 x le score</strong>.</li>
+          </ul>
+          <p>La somme des scores de tous les joueurs sur une donne est toujours egale a <strong>zero</strong>.</p>
+
+          <h3>Cas particuliers</h3>
+          <p><strong>Petit sec :</strong> si un joueur n'a que le Petit comme seul atout et qu'il ne possede pas l'Excuse, il doit obligatoirement l'annoncer et etaler son jeu. La donne est annulee et le joueur suivant distribue.</p>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1531,7 +2158,7 @@
     function distributeScores(totalPreneur, nbJoueurs, preneurIndex, partenaireIndex) {
       if (![3, 4, 5].includes(nbJoueurs)) throw new Error(`Invalid nbJoueurs: ${nbJoueurs}`);
       if (preneurIndex < 0 || preneurIndex >= nbJoueurs) throw new Error(`Invalid preneurIndex`);
-      if (nbJoueurs === 5) {
+      if (nbJoueurs === 5 && partenaireIndex !== 'chien') {
         if (partenaireIndex == null || partenaireIndex < 0 || partenaireIndex >= nbJoueurs) {
           throw new Error(`Invalid partenaireIndex for 5 players`);
         }
@@ -1553,10 +2180,17 @@
           if (i !== preneurIndex) scores[i] = -totalPreneur;
         }
       } else if (nbJoueurs === 5) {
-        scores[preneurIndex] = totalPreneur * 2;
-        scores[partenaireIndex] = totalPreneur;
-        for (let i = 0; i < 5; i++) {
-          if (i !== preneurIndex && i !== partenaireIndex) scores[i] = -totalPreneur;
+        if (partenaireIndex === 'chien') {
+          scores[preneurIndex] = totalPreneur * 4;
+          for (let i = 0; i < 5; i++) {
+            if (i !== preneurIndex) scores[i] = -totalPreneur;
+          }
+        } else {
+          scores[preneurIndex] = totalPreneur * 2;
+          scores[partenaireIndex] = totalPreneur;
+          for (let i = 0; i < 5; i++) {
+            if (i !== preneurIndex && i !== partenaireIndex) scores[i] = -totalPreneur;
+          }
         }
       }
 
@@ -1569,7 +2203,9 @@
       nbJoueurs: 4,
       joueurs: ['Joueur 1', 'Joueur 2', 'Joueur 3', 'Joueur 4'],
       donnes: [],
-      partieActive: false
+      partieActive: false,
+      startTime: null,
+      dealerIndex: 0
     };
 
     let state = loadState();
@@ -1577,7 +2213,12 @@
     function loadState() {
       try {
         const saved = localStorage.getItem('tarot-state');
-        return saved ? JSON.parse(saved) : { ...DEFAULT_STATE, joueurs: [...DEFAULT_STATE.joueurs], donnes: [] };
+        if (!saved) return { ...DEFAULT_STATE, joueurs: [...DEFAULT_STATE.joueurs], donnes: [] };
+        const parsed = JSON.parse(saved);
+        // Backward compat: add missing fields
+        if (parsed.startTime === undefined) parsed.startTime = null;
+        if (parsed.dealerIndex === undefined) parsed.dealerIndex = 0;
+        return parsed;
       } catch {
         return { ...DEFAULT_STATE, joueurs: [...DEFAULT_STATE.joueurs], donnes: [] };
       }
@@ -1592,7 +2233,9 @@
         nbJoueurs,
         joueurs: noms.slice(0, nbJoueurs),
         donnes: [],
-        partieActive: true
+        partieActive: true,
+        startTime: Date.now(),
+        dealerIndex: 0
       };
       saveState();
     }
@@ -1600,7 +2243,8 @@
     function ajouterDonne(donneParams) {
       const total = calculateScore(donneParams);
       const scores = distributeScores(total, state.nbJoueurs, donneParams.preneurIndex, donneParams.partenaireIndex);
-      state.donnes.push({ ...donneParams, total, scores });
+      state.donnes.push({ ...donneParams, total, scores, passee: false });
+      state.dealerIndex = (state.dealerIndex + 1) % state.nbJoueurs;
       saveState();
       return { total, scores };
     }
@@ -1620,6 +2264,221 @@
         d.scores.forEach((s, i) => { cumuls[i] += s; });
       });
       return cumuls;
+    }
+
+    // ---- VOICE (TTS) ----
+
+    function isVoiceEnabled() {
+      return localStorage.getItem('tarot-voice') !== 'off';
+    }
+
+    function getFrenchVoice() {
+      const voices = speechSynthesis.getVoices();
+      // Prefer premium/enhanced voices (Safari "Thomas", Chrome "Google français")
+      const preferred = voices.find(v => v.lang.startsWith('fr') && /premium|enhanced|natural|google/i.test(v.name));
+      if (preferred) return preferred;
+      // Fallback: any French voice
+      return voices.find(v => v.lang.startsWith('fr')) || null;
+    }
+
+    function speak(text) {
+      if (!isVoiceEnabled() || !window.speechSynthesis) return;
+      speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'fr-FR';
+      utterance.rate = 0.95;
+      utterance.pitch = 1;
+      const voice = getFrenchVoice();
+      if (voice) utterance.voice = voice;
+      speechSynthesis.speak(utterance);
+    }
+
+    // Preload voices (some browsers load them asynchronously)
+    if (window.speechSynthesis) {
+      speechSynthesis.getVoices();
+      speechSynthesis.addEventListener('voiceschanged', () => speechSynthesis.getVoices());
+    }
+
+    function buildScoreAnnouncement(donneParams) {
+      const preneurName = state.joueurs[donneParams.preneurIndex];
+      const total = calculateScore(donneParams);
+      const gagne = total >= 0;
+
+      let text = `${preneurName} ${gagne ? 'gagne' : 'perd'} ${Math.abs(total)} points. `;
+
+      const cumuls = getScoresCumules();
+      const classement = state.joueurs
+        .map((name, i) => ({ name, score: cumuls[i] }))
+        .sort((a, b) => b.score - a.score);
+
+      text += 'Classement : ';
+      text += classement.map((j, i) => {
+        const signe = j.score >= 0 ? '' : 'moins ';
+        return `${i === 0 ? '' : ', '}${j.name} ${signe}${Math.abs(j.score)}`;
+      }).join('');
+
+      text += `. C'est à ${state.joueurs[state.dealerIndex]} de distribuer.`;
+
+      return text;
+    }
+
+    // ---- CHRONO ----
+
+    let chronoInterval = null;
+
+    function formatDuration(ms) {
+      const totalSec = Math.floor(ms / 1000);
+      const h = Math.floor(totalSec / 3600);
+      const m = Math.floor((totalSec % 3600) / 60);
+      const s = totalSec % 60;
+      if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      return `${m}:${String(s).padStart(2, '0')}`;
+    }
+
+    function updateChrono() {
+      const $chrono = document.getElementById('chrono');
+      if (!$chrono || !state.startTime) return;
+      $chrono.textContent = formatDuration(Date.now() - state.startTime);
+    }
+
+    function startChrono() {
+      if (chronoInterval) clearInterval(chronoInterval);
+      updateChrono();
+      chronoInterval = setInterval(updateChrono, 1000);
+    }
+
+    function stopChrono() {
+      if (chronoInterval) {
+        clearInterval(chronoInterval);
+        chronoInterval = null;
+      }
+    }
+
+    // ---- DEALER ----
+
+    function updateDealerDisplay() {
+      const $dealerName = document.getElementById('dealer-name');
+      if ($dealerName && state.joueurs && state.dealerIndex != null) {
+        $dealerName.textContent = state.joueurs[state.dealerIndex] || '';
+      }
+    }
+
+    function enregistrerDonnePassee() {
+      const scores = new Array(state.nbJoueurs).fill(0);
+      state.donnes.push({ passee: true, scores, total: 0 });
+      state.dealerIndex = (state.dealerIndex + 1) % state.nbJoueurs;
+      saveState();
+      updateDealerDisplay();
+      renderScores();
+      showToast('Donne passee');
+      speak(`C'est à ${state.joueurs[state.dealerIndex]} de distribuer`);
+    }
+
+    // ---- HISTORY ----
+
+    function loadHistory() {
+      try {
+        const saved = localStorage.getItem('tarot-history');
+        return saved ? JSON.parse(saved) : [];
+      } catch { return []; }
+    }
+
+    function savePartieToHistory() {
+      const history = loadHistory();
+      const cumuls = getScoresCumules();
+      const donnesJouees = state.donnes.filter(d => !d.passee);
+      const donnesPassees = state.donnes.filter(d => d.passee);
+      history.unshift({
+        date: new Date(state.startTime).toISOString(),
+        duree: Date.now() - state.startTime,
+        nbJoueurs: state.nbJoueurs,
+        joueurs: [...state.joueurs],
+        donnes: [...state.donnes],
+        scoresFinaux: cumuls,
+        nbDonnesJouees: donnesJouees.length,
+        nbDonnesPassees: donnesPassees.length
+      });
+      localStorage.setItem('tarot-history', JSON.stringify(history));
+    }
+
+    function renderHistory() {
+      const history = loadHistory();
+      const $content = document.getElementById('history-content');
+      if (history.length === 0) {
+        $content.innerHTML = '<div class="history-empty">Aucune partie terminee</div>';
+        return;
+      }
+      let html = '';
+      history.forEach((partie, idx) => {
+        const date = new Date(partie.date);
+        const dateStr = date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        const dureeStr = formatDuration(partie.duree);
+        let winnerIdx = 0;
+        partie.scoresFinaux.forEach((s, i) => { if (s > partie.scoresFinaux[winnerIdx]) winnerIdx = i; });
+        html += '<div class="history-card">';
+        html += '<div class="history-card-header">';
+        html += `<span class="history-date">${dateStr}</span>`;
+        html += `<span class="history-duration">${dureeStr}</span>`;
+        html += '</div>';
+        html += `<div class="history-players">${partie.joueurs.map(n => escapeHtml(n)).join(', ')}</div>`;
+        html += '<div class="history-scores">';
+        partie.joueurs.forEach((nom, i) => {
+          const s = partie.scoresFinaux[i];
+          const cls = s > 0 ? 'score-positive' : s < 0 ? 'score-negative' : '';
+          html += `<span class="${cls}">${escapeHtml(nom)}: ${s > 0 ? '+' : ''}${s}</span>`;
+        });
+        html += '</div>';
+        html += `<div class="history-winner">Vainqueur : ${escapeHtml(partie.joueurs[winnerIdx])}</div>`;
+        html += `<div class="history-donnes-info">${partie.nbDonnesJouees} donne${partie.nbDonnesJouees !== 1 ? 's' : ''} jouee${partie.nbDonnesJouees !== 1 ? 's' : ''}`;
+        if (partie.nbDonnesPassees > 0) html += ` · ${partie.nbDonnesPassees} passee${partie.nbDonnesPassees !== 1 ? 's' : ''}`;
+        html += '</div>';
+        html += `<button class="history-delete" onclick="deleteHistoryEntry(${idx})">Supprimer</button>`;
+        html += '</div>';
+      });
+      $content.innerHTML = html;
+    }
+
+    function deleteHistoryEntry(idx) {
+      if (!confirm('Supprimer cette partie de l\'historique ?')) return;
+      const history = loadHistory();
+      history.splice(idx, 1);
+      localStorage.setItem('tarot-history', JSON.stringify(history));
+      renderHistory();
+    }
+
+    function openHistory() {
+      renderHistory();
+      document.getElementById('history-overlay').classList.remove('hidden');
+    }
+
+    function closeHistory() {
+      document.getElementById('history-overlay').classList.add('hidden');
+    }
+
+    function terminerPartie() {
+      if (!confirm('Terminer la partie et sauvegarder dans l\'historique ?')) return;
+      savePartieToHistory();
+      stopChrono();
+      state.partieActive = false;
+      saveState();
+      setupNbJoueurs = 4;
+      document.getElementById('player-count-group').querySelectorAll('.player-count-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.count === '4');
+      });
+      renderPlayerInputs();
+      showSetup();
+      switchToTab('nouvelle-donne');
+      showToast('Partie sauvegardee !');
+    }
+
+    // ---- RULES ----
+
+    function openRules() {
+      document.getElementById('rules-overlay').classList.remove('hidden');
+    }
+
+    function closeRules() {
+      document.getElementById('rules-overlay').classList.add('hidden');
     }
 
     // ---- UI LOGIC ----
@@ -1705,6 +2564,7 @@
       });
       nouvellePartie(setupNbJoueurs, noms);
       showMainApp();
+      speak(`C'est à ${state.joueurs[state.dealerIndex]} de distribuer`);
     });
 
     function showSetup() {
@@ -1719,6 +2579,8 @@
       updatePartenaireVisibility();
       updatePoigneeLabels();
       renderScores();
+      updateDealerDisplay();
+      if (state.startTime) startChrono();
     }
 
     document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -1766,6 +2628,10 @@
         opt.textContent = nom;
         $selectPartenaire.appendChild(opt);
       });
+      const optChien = document.createElement('option');
+      optChien.value = 'chien';
+      optChien.textContent = 'Roi dans le chien';
+      $selectPartenaire.appendChild(optChien);
     }
 
     $selectPreneur.addEventListener('change', () => {
@@ -1826,7 +2692,7 @@
 
       return {
         preneurIndex: preneurIdx !== '' ? parseInt(preneurIdx) : null,
-        partenaireIndex: partenaireIdx !== '' && partenaireIdx !== null ? parseInt(partenaireIdx) : null,
+        partenaireIndex: partenaireIdx === 'chien' ? 'chien' : (partenaireIdx !== '' && partenaireIdx !== null ? parseInt(partenaireIdx) : null),
         contrat: contratEl ? contratEl.value : null,
         bouts: boutsEl ? parseInt(boutsEl.value) : null,
         pointsPreneur: pointsVal !== '' ? parseFloat(pointsVal) : null,
@@ -1955,7 +2821,8 @@
       };
 
       try {
-        if (editingIndex !== null) {
+        const isNewDonne = editingIndex === null;
+        if (!isNewDonne) {
           const total = calculateScore(donneParams);
           const scores = distributeScores(total, state.nbJoueurs, donneParams.preneurIndex, donneParams.partenaireIndex);
           state.donnes[editingIndex] = { ...donneParams, total, scores };
@@ -1968,6 +2835,10 @@
         resetForm();
         switchToTab('partie-en-cours');
         renderScores();
+        updateDealerDisplay();
+        if (isNewDonne) {
+          speak(buildScoreAnnouncement(donneParams));
+        }
       } catch (e) {
         $formErrors.innerHTML = `<div>Erreur : ${e.message}</div>`;
         $formErrors.classList.add('visible');
@@ -2026,46 +2897,57 @@
 
       donnes.forEach((d, idx) => {
         const detailId = `donne-detail-${idx}`;
-        html += `<tr class="donne-row" onclick="toggleDetail('${detailId}')">`;
+        const isPassee = d.passee === true;
+        html += `<tr class="donne-row${isPassee ? ' donne-passee' : ''}" onclick="toggleDetail('${detailId}')">`;
         html += `<td>${idx + 1}</td>`;
-        d.scores.forEach(s => {
-          const cls = s > 0 ? 'score-positive' : s < 0 ? 'score-negative' : '';
-          html += `<td class="${cls}">${s > 0 ? '+' : ''}${s}</td>`;
-        });
+        if (isPassee) {
+          html += `<td colspan="${state.nbJoueurs}" style="text-align:center;">Passee</td>`;
+        } else {
+          d.scores.forEach(s => {
+            const cls = s > 0 ? 'score-positive' : s < 0 ? 'score-negative' : '';
+            html += `<td class="${cls}">${s > 0 ? '+' : ''}${s}</td>`;
+          });
+        }
         html += `<td class="donne-row-actions">`;
-        html += `<button onclick="event.stopPropagation(); editDonne(${idx})" title="Modifier"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 1.5l3 3L5 14H2v-3L11.5 1.5z"/></svg></button>`;
+        if (!isPassee) {
+          html += `<button onclick="event.stopPropagation(); editDonne(${idx})" title="Modifier"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 1.5l3 3L5 14H2v-3L11.5 1.5z"/></svg></button>`;
+        }
         html += `<button onclick="event.stopPropagation(); deleteDonne(${idx})" title="Supprimer" style="color:var(--red)"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h12M5.3 4V2.7a1 1 0 011-1h3.4a1 1 0 011 1V4M6 7v5M10 7v5"/><path d="M3.3 4l.7 9.3a1 1 0 001 .7h6a1 1 0 001-.7L12.7 4"/></svg></button>`;
         html += `</td>`;
         html += '</tr>';
 
         html += `<tr class="donne-detail" id="${detailId}"><td colspan="${state.nbJoueurs + 2}">`;
         html += '<div class="donne-detail-content">';
-        html += `<div class="donne-detail-item"><span class="detail-label">Preneur:</span> ${escapeHtml(state.joueurs[d.preneurIndex])}`;
-        if (state.nbJoueurs === 5 && d.partenaireIndex != null) {
-          html += ` + ${escapeHtml(state.joueurs[d.partenaireIndex])}`;
-        }
-        html += '</div>';
-        html += `<div class="donne-detail-item"><span class="detail-label">Contrat:</span> ${CONTRAT_LABELS[d.contrat] || d.contrat}</div>`;
-        html += `<div class="donne-detail-item"><span class="detail-label">Bouts:</span> ${d.bouts}</div>`;
-        html += `<div class="donne-detail-item"><span class="detail-label">Points:</span> ${d.pointsPreneur}</div>`;
+        if (isPassee) {
+          html += '<div class="donne-detail-item"><span class="detail-label">Donne passee</span> — personne n\'a pris</div>';
+        } else {
+          html += `<div class="donne-detail-item"><span class="detail-label">Preneur:</span> ${escapeHtml(state.joueurs[d.preneurIndex])}`;
+          if (state.nbJoueurs === 5 && d.partenaireIndex != null) {
+            html += d.partenaireIndex === 'chien' ? ' (roi dans le chien)' : ` + ${escapeHtml(state.joueurs[d.partenaireIndex])}`;
+          }
+          html += '</div>';
+          html += `<div class="donne-detail-item"><span class="detail-label">Contrat:</span> ${CONTRAT_LABELS[d.contrat] || d.contrat}</div>`;
+          html += `<div class="donne-detail-item"><span class="detail-label">Bouts:</span> ${d.bouts}</div>`;
+          html += `<div class="donne-detail-item"><span class="detail-label">Points:</span> ${d.pointsPreneur}</div>`;
 
-        if (d.petitAuBout && d.petitAuBout !== 'non') {
-          html += `<div class="donne-detail-item"><span class="detail-label">Petit au bout:</span> ${d.petitAuBout === 'attaque' ? 'Attaque' : 'Défense'}</div>`;
-        }
-        if (d.poignee && d.poignee.niveau !== 'non') {
-          html += `<div class="donne-detail-item"><span class="detail-label">Poignée:</span> ${d.poignee.niveau} (${d.poignee.camp})</div>`;
-        }
-        if (d.chelem && d.chelem !== 'non') {
-          html += `<div class="donne-detail-item"><span class="detail-label">Chelem:</span> ${CHELEM_LABELS[d.chelem] || d.chelem}</div>`;
-        }
+          if (d.petitAuBout && d.petitAuBout !== 'non') {
+            html += `<div class="donne-detail-item"><span class="detail-label">Petit au bout:</span> ${d.petitAuBout === 'attaque' ? 'Attaque' : 'Défense'}</div>`;
+          }
+          if (d.poignee && d.poignee.niveau !== 'non') {
+            html += `<div class="donne-detail-item"><span class="detail-label">Poignée:</span> ${d.poignee.niveau} (${d.poignee.camp})</div>`;
+          }
+          if (d.chelem && d.chelem !== 'non') {
+            html += `<div class="donne-detail-item"><span class="detail-label">Chelem:</span> ${CHELEM_LABELS[d.chelem] || d.chelem}</div>`;
+          }
 
-        const sn = d.total > 0 ? '+' : '';
-        const totalCls = d.total > 0 ? 'score-positive' : d.total < 0 ? 'score-negative' : '';
-        html += `<div class="donne-detail-item"><span class="detail-label">Score preneur:</span> <strong class="${totalCls}">${sn}${d.total}</strong></div>`;
-        html += `<div class="donne-detail-actions">`;
-        html += `<button class="btn-donne-edit" onclick="event.stopPropagation(); editDonne(${idx})">Modifier</button>`;
-        html += `<button class="btn-donne-delete" onclick="event.stopPropagation(); deleteDonne(${idx})">Supprimer</button>`;
-        html += `</div>`;
+          const sn = d.total > 0 ? '+' : '';
+          const totalCls = d.total > 0 ? 'score-positive' : d.total < 0 ? 'score-negative' : '';
+          html += `<div class="donne-detail-item"><span class="detail-label">Score preneur:</span> <strong class="${totalCls}">${sn}${d.total}</strong></div>`;
+          html += `<div class="donne-detail-actions">`;
+          html += `<button class="btn-donne-edit" onclick="event.stopPropagation(); editDonne(${idx})">Modifier</button>`;
+          html += `<button class="btn-donne-delete" onclick="event.stopPropagation(); deleteDonne(${idx})">Supprimer</button>`;
+          html += `</div>`;
+        }
         html += '</div></td></tr>';
       });
 
@@ -2115,7 +2997,7 @@
       $selectPreneur.value = d.preneurIndex;
       if (state.nbJoueurs === 5) {
         populatePartenaireSelect();
-        if (d.partenaireIndex != null) $selectPartenaire.value = d.partenaireIndex;
+        if (d.partenaireIndex != null) $selectPartenaire.value = String(d.partenaireIndex);
       }
 
       // Contrat
@@ -2157,8 +3039,10 @@
     function deleteDonne(idx) {
       if (!confirm('Supprimer cette donne ?')) return;
       state.donnes.splice(idx, 1);
+      state.dealerIndex = (state.dealerIndex - 1 + state.nbJoueurs) % state.nbJoueurs;
       saveState();
       renderScores();
+      updateDealerDisplay();
       showToast('Donne supprimée');
     }
 
@@ -2169,33 +3053,43 @@
         return;
       }
 
+      const donnesJouees = donnes.filter(d => !d.passee);
+      const donnesPassees = donnes.filter(d => d.passee);
+
       let html = '<div class="stats-section">';
       html += '<div class="stats-title">Statistiques</div>';
       html += '<div class="stats-grid">';
 
-      // Nombre de donnes
-      html += `<div class="stat-card"><div class="stat-value">${donnes.length}</div><div class="stat-label">Donnes jouées</div></div>`;
+      // Nombre de donnes jouées / distribuées
+      html += `<div class="stat-card"><div class="stat-value">${donnesJouees.length} / ${donnes.length}</div><div class="stat-label">Donnes jouees / distribuees</div></div>`;
 
-      // Contrat le plus joué
-      const contratCounts = {};
-      donnes.forEach(d => { contratCounts[d.contrat] = (contratCounts[d.contrat] || 0) + 1; });
-      const topContrat = Object.entries(contratCounts).sort((a, b) => b[1] - a[1])[0];
-      html += `<div class="stat-card"><div class="stat-value">${CONTRAT_LABELS[topContrat[0]]}</div><div class="stat-label">Contrat le + joué (${topContrat[1]}×)</div></div>`;
+      if (donnesJouees.length > 0) {
+        // Contrat le plus joué
+        const contratCounts = {};
+        donnesJouees.forEach(d => { contratCounts[d.contrat] = (contratCounts[d.contrat] || 0) + 1; });
+        const topContrat = Object.entries(contratCounts).sort((a, b) => b[1] - a[1])[0];
+        html += `<div class="stat-card"><div class="stat-value">${CONTRAT_LABELS[topContrat[0]]}</div><div class="stat-label">Contrat le + joue (${topContrat[1]}x)</div></div>`;
 
-      // Meilleur score d'une donne
-      let bestScore = donnes[0];
-      donnes.forEach(d => { if (d.total > bestScore.total) bestScore = d; });
-      const bestCls = bestScore.total > 0 ? 'score-positive' : bestScore.total < 0 ? 'score-negative' : '';
-      const bestSign = bestScore.total > 0 ? '+' : '';
-      html += `<div class="stat-card full-width"><div class="stat-value ${bestCls}">${bestSign}${bestScore.total}</div><div class="stat-label">Meilleur score — ${escapeHtml(state.joueurs[bestScore.preneurIndex])}</div></div>`;
+        // Meilleur score d'une donne
+        let bestScore = donnesJouees[0];
+        donnesJouees.forEach(d => { if (d.total > bestScore.total) bestScore = d; });
+        const bestCls = bestScore.total > 0 ? 'score-positive' : bestScore.total < 0 ? 'score-negative' : '';
+        const bestSign = bestScore.total > 0 ? '+' : '';
+        html += `<div class="stat-card full-width"><div class="stat-value ${bestCls}">${bestSign}${bestScore.total}</div><div class="stat-label">Meilleur score — ${escapeHtml(state.joueurs[bestScore.preneurIndex])}</div></div>`;
+      }
+
+      // Donnes passées
+      if (donnesPassees.length > 0) {
+        html += `<div class="stat-card"><div class="stat-value">${donnesPassees.length}</div><div class="stat-label">Donnes passees</div></div>`;
+      }
 
       html += '</div>';
 
       // Par joueur
       html += '<div class="stats-players">';
       state.joueurs.forEach((nom, i) => {
-        const prises = donnes.filter(d => d.preneurIndex === i).length;
-        const victoires = donnes.filter(d => d.preneurIndex === i && d.total > 0).length;
+        const prises = donnesJouees.filter(d => d.preneurIndex === i).length;
+        const victoires = donnesJouees.filter(d => d.preneurIndex === i && d.total > 0).length;
         const taux = prises > 0 ? Math.round((victoires / prises) * 100) : 0;
         html += `<div class="stats-player-row">`;
         html += `<span class="stats-player-name">${escapeHtml(nom)}</span>`;
@@ -2209,6 +3103,7 @@
 
     $btnNouvellePartie.addEventListener('click', () => {
       if (confirm('Commencer une nouvelle partie ? Les scores actuels seront perdus.')) {
+        stopChrono();
         state.partieActive = false;
         saveState();
         setupNbJoueurs = 4;
@@ -2288,7 +3183,7 @@
       ['roi', 'dame', 'cavalier', 'valet', 'petite'].forEach(card => {
         const countEl = document.querySelector(`[data-card-count="${card}"]`);
         const ptsEl = document.querySelector(`[data-card-pts="${card}"]`);
-        if (countEl) countEl.textContent = compteurState[card];
+        if (countEl) countEl.value = compteurState[card];
         if (ptsEl) {
           const pts = compteurState[card] * CARD_VALUES[card];
           ptsEl.textContent = pts % 1 === 0 ? pts : pts.toFixed(1);
@@ -2361,6 +3256,55 @@
         updateCardCount(btn.dataset.card, parseInt(btn.dataset.dir));
       });
     });
+
+    // Manual input listeners for compteur
+    document.querySelectorAll('.compteur-value-input').forEach(input => {
+      input.addEventListener('input', () => {
+        const card = input.dataset.cardCount;
+        const max = CARD_MAX[card] || 0;
+        let val = parseInt(input.value);
+        if (isNaN(val) || val < 0) val = 0;
+        if (val > max) val = max;
+        compteurState[card] = val;
+        updateCompteurDisplay();
+      });
+    });
+
+    // ---- NEW EVENT LISTENERS ----
+
+    // Personne n'a pris
+    document.getElementById('btn-passe').addEventListener('click', enregistrerDonnePassee);
+
+    // Terminer la partie
+    document.getElementById('btn-terminer-partie').addEventListener('click', terminerPartie);
+
+    // History
+    document.getElementById('btn-history').addEventListener('click', openHistory);
+    document.getElementById('history-close').addEventListener('click', closeHistory);
+    document.getElementById('history-overlay').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('history-overlay')) closeHistory();
+    });
+
+    // Rules
+    document.getElementById('btn-help').addEventListener('click', openRules);
+    document.getElementById('btn-help-setup').addEventListener('click', openRules);
+    document.getElementById('rules-close').addEventListener('click', closeRules);
+    document.getElementById('rules-overlay').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('rules-overlay')) closeRules();
+    });
+
+    // Voice toggle
+    document.getElementById('btn-voice').addEventListener('click', () => {
+      const current = isVoiceEnabled();
+      localStorage.setItem('tarot-voice', current ? 'off' : 'on');
+      document.getElementById('btn-voice').textContent = current ? '🔇' : '🔊';
+      if (current) speechSynthesis.cancel();
+    });
+
+    // Init voice button state
+    if (!isVoiceEnabled()) {
+      document.getElementById('btn-voice').textContent = '🔇';
+    }
 
     // ---- INIT ----
 
